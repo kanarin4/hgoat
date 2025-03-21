@@ -593,6 +593,9 @@ export default function Review({ formData = {}, handleChange }) {
       <Card>
         <h2 style={{ fontWeight: "bold" }}>{t("basicInfo")}</h2>
         <p>{t("caretakerName")}: {caretakerName}</p>
+        {/* <p>{t("date")}: {formData.date || "N/A"}</p> ✅ Added Date Field */}
+        <p>{t("date")}: {formData.date || new Date().toISOString().split("T")[0]}</p> {/* ✅ Fix here */}
+  
         <p>{t("temperature")}: {outdoorTemp} °C</p>
         <p>{t("weatherCondition")}: {weatherCondition}</p>
         <button onClick={() => navigate("/basic-info")} className="edit-button">✏️ {t("edit")}</button>
