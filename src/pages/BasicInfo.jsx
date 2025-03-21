@@ -233,7 +233,7 @@ export default function BasicInfo({ formData = {}, handleChange = () => {} }) {
           type="number"
           value={defaultFormData.outdoor_temperature}
           onChange={(e) => handleChange("outdoor_temperature", null, parseFloat(e.target.value))}
-          style={{ width: "90%", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", marginBottom: "10px" }}
+          style={{ width: "95%", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", marginBottom: "10px" }}
         />
 
         {/* Weather Condition Input */}
@@ -242,7 +242,7 @@ export default function BasicInfo({ formData = {}, handleChange = () => {} }) {
           type="text"
           value={defaultFormData.weather_condition}
           onChange={(e) => handleChange("weather_condition", null, e.target.value)}
-          style={{ width: "90%", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", marginBottom: "10px" }}
+          style={{ width: "95%", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", marginBottom: "10px" }}
         />
 
         {/* 📅 Date Field */}
@@ -251,7 +251,7 @@ export default function BasicInfo({ formData = {}, handleChange = () => {} }) {
           type="date"
           value={defaultFormData.date}
           onChange={(e) => handleChange("date", null, e.target.value)}
-          style={{ width: "90%", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", marginBottom: "10px" }}
+          style={{ width: "95%", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", marginBottom: "10px" }}
         />
 
         {/* 👤 Caretaker Name Field */}
@@ -260,7 +260,7 @@ export default function BasicInfo({ formData = {}, handleChange = () => {} }) {
           type="text"
           value={defaultFormData.caretaker_name}
           onChange={(e) => handleChange("caretaker_name", null, e.target.value)}
-          style={{ width: "90%", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", marginBottom: "10px" }}
+          style={{ width: "95%", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", marginBottom: "10px" }}
         />
       </Card>
 

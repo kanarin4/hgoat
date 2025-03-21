@@ -487,7 +487,7 @@ export default function GoatForm({ formData, handleChange }) {
           value={goatData.temperature}
           onChange={handleTempChange}
           placeholder="e.g., 38.5~40.5"
-          style={{ width: "100%", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", marginBottom: "10px" }}
+          style={{ width: "95%", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", marginBottom: "10px" }}
           step="0.1"
         />
 
@@ -545,7 +545,7 @@ export default function GoatForm({ formData, handleChange }) {
           value={goatData.notes}
           onChange={(e) => handleChange("goats", "notes", e.target.value, formKey)}
           placeholder={t("additionalNotes")}
-          style={{ width: "100%", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", marginBottom: "10px" }}
+          style={{ width: "95%", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", marginBottom: "10px" }}
         />
       </Card>
 

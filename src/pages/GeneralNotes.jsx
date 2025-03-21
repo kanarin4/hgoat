@@ -131,7 +131,7 @@ export default function GeneralNotes({ formData = {}, handleChange }) {
           onChange={(e) => handleChange("general_notes", null, e.target.value)}
           placeholder={t("additionalNotes")}
           style={{
-            width: "100%",
+            width: "95%",
             height: "200px",
             padding: "10px",
             borderRadius: "8px",

@@ -369,7 +369,7 @@ export default function TaskChecklist({ formData = {}, handleChange }) {
             <li>{t("checkForRepairs")}</li>
             <li>{t("addNewBeddingIfNeeded")}</li>
             <li>{t("ensureProperVentilation")}</li>
-          </ul>
+          </ul> 
 
           {/* ⚡ Electric Fence */}
           <p><strong>{t("electricFence")}:</strong></p>
