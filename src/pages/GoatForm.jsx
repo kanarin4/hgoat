@@ -3,11 +3,11 @@
 
 
 
-
 // import { useTranslation } from "react-i18next";
 // import { useNavigate, useLocation } from "react-router-dom";
 // import { useState, useEffect } from "react";
 // import Navbar from "../components/Navbar";
+// import Card from "../components/Card"; // ✅ Import Card component
 
 // export default function GoatForm({ formData, handleChange }) {
 //   const { t } = useTranslation();
@@ -88,80 +88,76 @@
 //         {t("goatInfo", { id: goatId })}
 //       </h1>
 
-//       {/* 🐐 Temperature */}
-//       <div className="mb-4">
-//         <label className="block mb-1 font-semibold">{t("bodyTemp")}:</label>
+//       {/* 🐐 Wrap Everything Inside a Card */}
+//       <Card>
+//         {/* 🐐 Temperature */}
+//         <label style={{ fontWeight: "bold", display: "block", marginBottom: "5px" }}>{t("bodyTemp")}:</label>
 //         <input
 //           type="number"
 //           value={goatData.temperature}
 //           onChange={handleTempChange}
 //           placeholder="e.g., 38.5~40.5"
-//           className="w-full p-2 border rounded"
+//           style={{ width: "100%", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", marginBottom: "10px" }}
 //           step="0.1"
 //         />
-//         <div className="mt-2">
-//           <label htmlFor={`confirmCheck-${formKey}`} className="flex items-center">
+
+//         <div style={{ marginTop: "5px" }}>
+//           <label htmlFor={`confirmCheck-${formKey}`} style={{ display: "flex", alignItems: "center" }}>
 //             <input
 //               type="checkbox"
 //               id={`confirmCheck-${formKey}`}
 //               checked={confirmationChecked}
 //               onChange={handleCheckboxChange}
 //               disabled={!isTempOutOfRange(goatData.temperature)}
-//               className="mr-2"
+//               style={{ marginRight: "10px" }}
 //             />
 //             <span style={{ color: !isTempOutOfRange(goatData.temperature) ? "#9CA3AF" : "#EF4444", fontWeight: "bold" }}>
 //               {t("tempOutsideRangeWarning")}
 //             </span>
 //           </label>
 //         </div>
-//       </div>
 
-//       {/* 💩 Stool */}
-//       <div className="mb-4">
-//         <label className="block mb-1 font-semibold">{t("stoolCondition")}:</label>
+//         {/* 💩 Stool */}
+//         <label style={{ fontWeight: "bold", display: "block", marginTop: "15px", marginBottom: "5px" }}>{t("stoolCondition")}:</label>
 //         {["good", "soft", "hard"].map((option) => (
-//           <label key={option} className="flex items-center">
+//           <label key={option} style={{ display: "flex", alignItems: "center" }}>
 //             <input
 //               type="radio"
 //               name={`stool-${formKey}`}
 //               value={option}
 //               checked={goatData.stool === option}
 //               onChange={(e) => handleChange("goats", "stool", e.target.value, formKey)}
-//               className="mr-2"
+//               style={{ marginRight: "10px" }}
 //             />
 //             {t(option)}
 //           </label>
 //         ))}
-//       </div>
 
-//       {/* 🍽️ Appetite */}
-//       <div className="mb-4">
-//         <label className="block mb-1 font-semibold">{t("appetite")}:</label>
+//         {/* 🍽️ Appetite */}
+//         <label style={{ fontWeight: "bold", display: "block", marginTop: "15px", marginBottom: "5px" }}>{t("appetite")}:</label>
 //         {["good", "normal", "poor"].map((option) => (
-//           <label key={option} className="flex items-center">
+//           <label key={option} style={{ display: "flex", alignItems: "center" }}>
 //             <input
 //               type="radio"
 //               name={`appetite-${formKey}`}
 //               value={option}
 //               checked={goatData.appetite === option}
 //               onChange={(e) => handleChange("goats", "appetite", e.target.value, formKey)}
-//               className="mr-2"
+//               style={{ marginRight: "10px" }}
 //             />
 //             {t(option)}
 //           </label>
 //         ))}
-//       </div>
 
-//       {/* 📝 Notes */}
-//       <div className="mb-4">
-//         <label className="block mb-1 font-semibold">{t("additionalNotes")}:</label>
+//         {/* 📝 Notes */}
+//         <label style={{ fontWeight: "bold", display: "block", marginTop: "15px", marginBottom: "5px" }}>{t("additionalNotes")}:</label>
 //         <textarea
 //           value={goatData.notes}
 //           onChange={(e) => handleChange("goats", "notes", e.target.value, formKey)}
 //           placeholder={t("additionalNotes")}
-//           className="w-full p-2 border rounded"
+//           style={{ width: "100%", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", marginBottom: "10px" }}
 //         />
-//       </div>
+//       </Card>
 
 //       {/* 🔄 Navigation */}
 //       <div style={{ display: "flex", gap: "15px", marginTop: "20px" }}>
@@ -209,6 +205,206 @@
 
 
 
+
+
+
+// import { useTranslation } from "react-i18next";
+// import { useNavigate, useLocation } from "react-router-dom";
+// import { useState, useEffect } from "react";
+// import Navbar from "../components/Navbar";
+// import Card from "../components/Card"; // ✅ Import Card component
+
+// export default function GoatForm({ formData, handleChange }) {
+//   const { t } = useTranslation();
+//   const navigate = useNavigate();
+//   const location = useLocation();
+
+//   // 🐐 Get goat ID from URL query params
+//   const searchParams = new URLSearchParams(location.search);
+//   const goatId = searchParams.get("goat") === "B" ? "B" : "A"; // Default to A if missing/invalid
+//   const formKey = goatId === "A" ? "goatA" : "goatB";
+
+//   if (!formData || !formData.goats) {
+//     console.warn("🚨 formData.goats is undefined!");
+//     return <div>Loading...</div>;
+//   }
+
+//   const goatData = formData.goats[formKey] || {
+//     temperature: "",
+//     stool: "",
+//     appetite: "",
+//     notes: "",
+//     confirmationChecked: false,
+//   };
+
+//   const [confirmationChecked, setConfirmationChecked] = useState(goatData.confirmationChecked || false);
+
+//   const isTempOutOfRange = (temperature) => {
+//     const temp = parseFloat(temperature);
+//     return temp < 38.5 || temp > 40.5;
+//   };
+
+//   const handleTempChange = (e) => {
+//     const value = e.target.value;
+//     handleChange("goats", "temperature", value, formKey);
+//     setConfirmationChecked(false);
+//     handleChange("goats", "confirmationChecked", false, formKey);
+//   };
+
+//   const handleCheckboxChange = (e) => {
+//     const checked = e.target.checked;
+//     setConfirmationChecked(checked);
+//     handleChange("goats", "confirmationChecked", checked, formKey);
+//   };
+
+//   useEffect(() => {
+//     if (!isTempOutOfRange(goatData.temperature) && confirmationChecked) {
+//       setConfirmationChecked(false);
+//       handleChange("goats", "confirmationChecked", false, formKey);
+//     }
+//   }, [goatData.temperature, confirmationChecked, handleChange, formKey]);
+
+//   const goToPrevious = () => {
+//     navigate(goatId === "B" ? "/goat-form?goat=A" : "/basic-info");
+//   };
+
+//   const goToNext = () => {
+//     navigate(goatId === "A" ? "/goat-form?goat=B" : "/task-checklist");
+//   };
+
+//   return (
+//     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", minHeight: "100vh", backgroundColor: "#f9fafb" }}>
+//       <Navbar />
+//       <div style={{ height: "60px" }}></div>
+
+//       <h1 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "20px" }}>
+//         {t("goatInfo", { id: goatId })}
+//       </h1>
+
+//       {/* 🐐 Form Inside a Card */}
+//       <Card>
+//         <label style={{ fontWeight: "bold", display: "block", marginBottom: "5px" }}>{t("bodyTemp")}:</label>
+//         <input
+//           type="number"
+//           value={goatData.temperature}
+//           onChange={handleTempChange}
+//           placeholder="e.g., 38.5~40.5"
+//           style={{ width: "100%", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", marginBottom: "10px" }}
+//           step="0.1"
+//         />
+
+//         <div style={{ marginTop: "5px" }}>
+//           <label htmlFor={`confirmCheck-${formKey}`} style={{ display: "flex", alignItems: "center" }}>
+//             <input
+//               type="checkbox"
+//               id={`confirmCheck-${formKey}`}
+//               checked={confirmationChecked}
+//               onChange={handleCheckboxChange}
+//               disabled={!isTempOutOfRange(goatData.temperature)}
+//               style={{ marginRight: "10px" }}
+//             />
+//             <span style={{ color: !isTempOutOfRange(goatData.temperature) ? "#9CA3AF" : "#EF4444", fontWeight: "bold" }}>
+//               {t("tempOutsideRangeWarning")}
+//             </span>
+//           </label>
+//         </div>
+
+//         {/* 💩 Stool */}
+//         <label style={{ fontWeight: "bold", display: "block", marginTop: "15px", marginBottom: "5px" }}>{t("stoolCondition")}:</label>
+//         {["good", "soft", "hard"].map((option) => (
+//           <label key={option} style={{ display: "flex", alignItems: "center" }}>
+//             <input
+//               type="radio"
+//               name={`stool-${formKey}`}
+//               value={option}
+//               checked={goatData.stool === option}
+//               onChange={(e) => handleChange("goats", "stool", e.target.value, formKey)}
+//               style={{ marginRight: "10px" }}
+//             />
+//             {t(option)}
+//           </label>
+//         ))}
+
+//         {/* 🍽️ Appetite */}
+//         <label style={{ fontWeight: "bold", display: "block", marginTop: "15px", marginBottom: "5px" }}>{t("appetite")}:</label>
+//         {["good", "normal", "poor"].map((option) => (
+//           <label key={option} style={{ display: "flex", alignItems: "center" }}>
+//             <input
+//               type="radio"
+//               name={`appetite-${formKey}`}
+//               value={option}
+//               checked={goatData.appetite === option}
+//               onChange={(e) => handleChange("goats", "appetite", e.target.value, formKey)}
+//               style={{ marginRight: "10px" }}
+//             />
+//             {t(option)}
+//           </label>
+//         ))}
+
+//         {/* 📝 Notes */}
+//         <label style={{ fontWeight: "bold", display: "block", marginTop: "15px", marginBottom: "5px" }}>{t("additionalNotes")}:</label>
+//         <textarea
+//           value={goatData.notes}
+//           onChange={(e) => handleChange("goats", "notes", e.target.value, formKey)}
+//           placeholder={t("additionalNotes")}
+//           style={{ width: "100%", padding: "8px", borderRadius: "6px", border: "1px solid #ccc", marginBottom: "10px" }}
+//         />
+//       </Card>
+
+//       {/* 📖 Goat Health Monitoring Guide */}
+//       <Card style={{ marginTop: "20px" }}>
+//         <h2 style={{ fontWeight: "bold", textAlign: "center", marginBottom: "10px" }}>📖 {t("healthMonitoringGuide")}</h2>
+//         <p><strong>🐐 {t("bodyTemp")}:</strong> 38.0°C～39.5°C</p>
+//         <ul>
+//           <li>{t("useLubricatedThermometer")}</li>
+//           <li>{t("holdGoatSecurely")}</li>
+//           <li>{t("waitForStableReading")}</li>
+//           <li>{t("cleanThermometerAfterUse")}</li>
+//         </ul>
+//         <p><strong>💩 {t("stoolCondition")}:</strong></p>
+//         <ul>
+//           <li>{t("normalStool")}</li>
+//           <li>{t("softStool")}</li>
+//           <li>{t("hardStool")}</li>
+//           <li>{t("persistentDiarrhea")}</li>
+//         </ul>
+//         <p><strong>🍽️ {t("appetite")}:</strong></p>
+//         <ul>
+//           <li>{t("goodAppetite")}</li>
+//           <li>{t("normalAppetite")}</li>
+//           <li>{t("poorAppetite")}</li>
+//           <li>{t("noFoodFor24h")}</li>
+//         </ul>
+//         <p><strong>⚠️ {t("emergencySigns")}:</strong></p>
+//         <ul>
+//           <li>{t("highOrLowTemp")}</li>
+//           <li>{t("severeDiarrheaOrConstipation")}</li>
+//           <li>{t("noFoodFor24h")}</li>
+//           <li>{t("breathingIssues")}</li>
+//           <li>{t("abnormalDischarge")}</li>
+//           <li>{t("unableToStandOrWalk")}</li>
+//         </ul>
+//       </Card>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -222,19 +418,14 @@ export default function GoatForm({ formData, handleChange }) {
 
   // 🐐 Get goat ID from URL query params
   const searchParams = new URLSearchParams(location.search);
-  const goatId = searchParams.get("goat") === "B" ? "B" : "A"; // Default to A if missing/invalid
+  const goatId = searchParams.get("goat") === "B" ? "B" : "A";
   const formKey = goatId === "A" ? "goatA" : "goatB";
 
-  // 🛠 Debugging: Log formData
-  console.log("GoatForm: formData =", formData);
-
-  // 🛠 Ensure `formData.goats` exists before accessing it
   if (!formData || !formData.goats) {
     console.warn("🚨 formData.goats is undefined!");
-    return <div>Loading...</div>; // Prevents crashing while state initializes
+    return <div>Loading...</div>;
   }
 
-  // ✅ Ensure goatData always exists
   const goatData = formData.goats[formKey] || {
     temperature: "",
     stool: "",
@@ -244,31 +435,26 @@ export default function GoatForm({ formData, handleChange }) {
   };
 
   const [confirmationChecked, setConfirmationChecked] = useState(goatData.confirmationChecked || false);
+  const [showGuide, setShowGuide] = useState(false); // ✅ State for toggling guide visibility
 
-  // 🔄 Check if temperature is out of range
   const isTempOutOfRange = (temperature) => {
     const temp = parseFloat(temperature);
     return temp < 38.5 || temp > 40.5;
   };
 
-  // 🔄 Handle Temperature Input Change
   const handleTempChange = (e) => {
     const value = e.target.value;
     handleChange("goats", "temperature", value, formKey);
-
-    // Reset confirmation checkbox if temperature changes
     setConfirmationChecked(false);
     handleChange("goats", "confirmationChecked", false, formKey);
   };
 
-  // 🔄 Handle Checkbox Change
   const handleCheckboxChange = (e) => {
     const checked = e.target.checked;
     setConfirmationChecked(checked);
     handleChange("goats", "confirmationChecked", checked, formKey);
   };
 
-  // ✅ Ensure confirmation checkbox resets when temperature changes
   useEffect(() => {
     if (!isTempOutOfRange(goatData.temperature) && confirmationChecked) {
       setConfirmationChecked(false);
@@ -276,7 +462,6 @@ export default function GoatForm({ formData, handleChange }) {
     }
   }, [goatData.temperature, confirmationChecked, handleChange, formKey]);
 
-  // **🔄 Navigation Functions**
   const goToPrevious = () => {
     navigate(goatId === "B" ? "/goat-form?goat=A" : "/basic-info");
   };
@@ -294,9 +479,8 @@ export default function GoatForm({ formData, handleChange }) {
         {t("goatInfo", { id: goatId })}
       </h1>
 
-      {/* 🐐 Wrap Everything Inside a Card */}
+      {/* 🐐 Form Inside a Card */}
       <Card>
-        {/* 🐐 Temperature */}
         <label style={{ fontWeight: "bold", display: "block", marginBottom: "5px" }}>{t("bodyTemp")}:</label>
         <input
           type="number"
@@ -365,9 +549,14 @@ export default function GoatForm({ formData, handleChange }) {
         />
       </Card>
 
-      {/* 🔄 Navigation */}
-      <div style={{ display: "flex", gap: "15px", marginTop: "20px" }}>
-        <button
+    {/* 🔄 Navigation */}
+        {/* <div style={{ display: "flex", gap: "15px", marginTop: "20px" }}>
+            <button onClick={goToPrevious} className="nav-button">⬅️ {t("back")}</button>
+            <button onClick={goToNext} className="nav-button">➡️ {t("next")}</button>
+        </div> */}
+
+        <div style={{ display: "flex", gap: "15px", marginTop: "20px" }}>
+            <button
           onClick={goToPrevious}
           style={{
             padding: "12px 24px",
@@ -399,6 +588,62 @@ export default function GoatForm({ formData, handleChange }) {
           ➡️ {t("next")}
         </button>
       </div>
+
+      {/* 🏥 Guide Toggle Button */}
+      <button
+        onClick={() => setShowGuide(!showGuide)}
+        style={{
+          padding: "10px 20px",
+          marginTop: "20px",
+          backgroundColor: "#ff9800",
+          color: "white",
+          borderRadius: "8px",
+          border: "none",
+          cursor: "pointer",
+          fontSize: "1rem",
+        }}
+      >
+        📖 {t("openGuide")}
+      </button>
+
+      {/* 📖 Health Monitoring Guide (Collapsible) */}
+      {showGuide && (
+        <Card style={{ marginTop: "20px" }}>
+        <h2 style={{ fontWeight: "bold", textAlign: "center", marginBottom: "10px" }}>📖 {t("healthMonitoringGuide")}</h2>
+        <p><strong>{t("bodyTemp")}:</strong> 38.0°C～39.5°C</p>
+        <ul>
+          <li>{t("useLubricatedThermometer")}</li>
+          <li>{t("holdGoatSecurely")}</li>
+          <li>{t("waitForStableReading")}</li>
+          <li>{t("cleanThermometerAfterUse")}</li>
+        </ul>
+        <p><strong>{t("stoolCondition")}:</strong></p>
+        <ul>
+          <li>{t("normalStool")}</li>
+          <li>{t("softStool")}</li>
+          <li>{t("hardStool")}</li>
+          <li>{t("persistentDiarrhea")}</li>
+        </ul>
+        <p><strong>{t("appetite")}:</strong></p>
+        <ul>
+          <li>{t("goodAppetite")}</li>
+          <li>{t("normalAppetite")}</li>
+          <li>{t("poorAppetite")}</li>
+          <li>{t("noFoodFor24h")}</li>
+        </ul>
+        <p><strong>⚠️ {t("emergencySigns")}:</strong></p>
+        <ul>
+          <li>{t("highOrLowTemp")}</li>
+          <li>{t("severeDiarrheaOrConstipation")}</li>
+          <li>{t("noFoodFor24h")}</li>
+          <li>{t("breathingIssues")}</li>
+          <li>{t("abnormalDischarge")}</li>
+          <li>{t("unableToStandOrWalk")}</li>
+        </ul>
+      </Card>
+      )}
+
+
     </div>
   );
 }
