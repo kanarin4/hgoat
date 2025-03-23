@@ -275,7 +275,7 @@ export default function TaskChecklist({ formData = {}, handleChange }) {
         {[
           { id: "waterChanged", label: t("changedWater") },
           { id: "shelterCleaned", label: t("cleanedShelter") },
-          { id: "electricFenceOn", label: t("electricFence") },
+          { id: "turnedOnElectricFenceOn", label: t("electricFence") },
           { id: "setElectricFenceVoltage", label: t("setElectricFenceVoltage") } // ✅ New Checkbox
         ].map(task => (
           <label key={task.id} style={{ display: "flex", alignItems: "center", marginBottom: "8px" }}>
@@ -356,6 +356,7 @@ export default function TaskChecklist({ formData = {}, handleChange }) {
           
           {/* 🚰 Water Change */}
           <p><strong>{t("waterChange")}:</strong></p>
+          <p>{t("waterChangeDesc")}</p>
           <ul>
             <li>{t("emptyAndRinseBucket")}</li>
             <li>{t("refillWithFreshWater")}</li>
@@ -364,6 +365,7 @@ export default function TaskChecklist({ formData = {}, handleChange }) {
 
           {/* 🏠 Shelter Cleaning */}
           <p><strong>{t("shelterCleaning")}:</strong></p>
+          <p>{t("shelterCleaningDesc")}</p>
           <ul>
             <li>{t("removeDirtyBedding")}</li>
             <li>{t("checkForRepairs")}</li>
@@ -373,6 +375,7 @@ export default function TaskChecklist({ formData = {}, handleChange }) {
 
           {/* ⚡ Electric Fence */}
           <p><strong>{t("electricFence")}:</strong></p>
+          <p>{t("electricFenceDesc")}</p>
           <ul>
             <li>{t("ensureFencePowerOn")}</li>
             <li>{t("inspectForDamage")}</li>

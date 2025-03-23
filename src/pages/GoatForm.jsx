@@ -610,7 +610,8 @@ export default function GoatForm({ formData, handleChange }) {
       {showGuide && (
         <Card style={{ marginTop: "20px" }}>
         <h2 style={{ fontWeight: "bold", textAlign: "center", marginBottom: "10px" }}>📖 {t("healthMonitoringGuide")}</h2>
-        <p><strong>{t("bodyTemp")}:</strong> 38.0°C～39.5°C</p>
+        <p><strong>{t("bodyTemp")}:</strong></p>
+        <p>{t("bodyTempDesc")}</p>
         <ul>
           <li>{t("useLubricatedThermometer")}</li>
           <li>{t("holdGoatSecurely")}</li>
@@ -618,6 +619,7 @@ export default function GoatForm({ formData, handleChange }) {
           <li>{t("cleanThermometerAfterUse")}</li>
         </ul>
         <p><strong>{t("stoolCondition")}:</strong></p>
+        <p>{t("stoolConditionDesc")}</p>
         <ul>
           <li>{t("normalStool")}</li>
           <li>{t("softStool")}</li>
@@ -625,6 +627,7 @@ export default function GoatForm({ formData, handleChange }) {
           <li>{t("persistentDiarrhea")}</li>
         </ul>
         <p><strong>{t("appetite")}:</strong></p>
+        <p>{t("appetiteDesc")}</p>
         <ul>
           <li>{t("goodAppetite")}</li>
           <li>{t("normalAppetite")}</li>
@@ -632,6 +635,7 @@ export default function GoatForm({ formData, handleChange }) {
           <li>{t("noFoodFor24h")}</li>
         </ul>
         <p><strong>⚠️ {t("emergencySigns")}:</strong></p>
+        <p>{t("callAVetIf")}</p>
         <ul>
           <li>{t("highOrLowTemp")}</li>
           <li>{t("severeDiarrheaOrConstipation")}</li>
