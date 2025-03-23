@@ -54,7 +54,7 @@
     "tasksCompleted": "作業完了",
     "changedWater": "水を交換した",
     "cleanedShelter": "小屋を掃除した",
-    "electricFence": "電気柵の電源を入れた",
+    "turnedOnElectricFence": "電気柵の電源を入れた",
     "setElectricFenceVoltage": "電気柵の電圧設定",
     "generalNotes": "備考欄",
     "review": "レポートの確認",

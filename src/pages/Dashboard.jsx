@@ -2,106 +2,6 @@
 
 
 
-// import { useTranslation } from "react-i18next";
-// import { useNavigate } from "react-router-dom";
-// import { downloadGoatReportsCSV } from "../services/csvDownload"; // ✅ Shorter function name
-// import Card from "../components/Card";
-// import Navbar from "../components/Navbar";
-
-// export default function Dashboard() {
-//   const { t } = useTranslation();
-//   const navigate = useNavigate(); // ✅ Navigation hook
-
-//   return (
-//     <div style={{
-//       display: "flex",
-//       flexDirection: "column",
-//       alignItems: "center",
-//       minHeight: "100vh",
-//       backgroundColor: "#f9fafb"
-//     }}>
-//       {/* 🏠 Navbar */}
-//       <Navbar />
-
-//       {/* Empty space to prevent content from being covered by navbar */}
-//       <div style={{ height: "60px" }}></div>
-
-//       {/* 🐐 Welcome Message */}
-//       <h1 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "20px" }}>
-//         {t("home")}
-//       </h1>
-
-//       {/* 📊 Future Graph / Visualization Placeholder */}
-//       <div style={{
-//         width: "80%",
-//         minHeight: "250px",
-//         backgroundColor: "#e0e0e0",
-//         borderRadius: "12px",
-//         display: "flex",
-//         justifyContent: "center",
-//         alignItems: "center",
-//         fontSize: "1.2rem",
-//         color: "#666",
-//         marginBottom: "20px"
-//       }}>
-//         📊 Future Graph / Visualization Here
-//       </div>
-
-//       {/* 📦 Card Container */}
-//       <Card>
-//         <div style={{
-//           display: "flex",
-//           flexDirection: "column",
-//           alignItems: "center",
-//           gap: "15px",
-//           padding: "20px"
-//         }}>
-//           {/* 🚀 Start Report Button */}
-//           <button 
-//             onClick={() => navigate("/basic-info")} // ✅ Navigates to /basic-info
-//             style={{
-//               padding: "12px 24px",
-//               backgroundColor: "#4a90e2",
-//               color: "white",
-//               borderRadius: "8px",
-//               border: "none",
-//               cursor: "pointer",
-//               transition: "0.3s",
-//               fontSize: "1rem"
-//             }}
-//             onMouseOver={(e) => e.target.style.backgroundColor = "#357ABD"}
-//             onMouseOut={(e) => e.target.style.backgroundColor = "#4a90e2"}>
-//             📋 {t("startReport")}
-//           </button>
-
-//           {/* 📥 Download CSV Button */}
-//           <button 
-//             onClick={downloadGoatReportsCSV} // ✅ Calls CSV Download
-//             style={{
-//               padding: "12px 24px",
-//               backgroundColor: "#2ecc71",
-//               color: "white",
-//               borderRadius: "8px",
-//               border: "none",
-//               cursor: "pointer",
-//               transition: "0.3s",
-//               fontSize: "1rem"
-//             }}
-//             onMouseOver={(e) => e.target.style.backgroundColor = "#27ae60"}
-//             onMouseOut={(e) => e.target.style.backgroundColor = "#2ecc71"}>
-//             📥 {t("downloadCSV")}
-//           </button>
-//         </div>
-//       </Card>
-//     </div>
-//   );
-// }
-
-
-
-
-
-
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { downloadGoatReportsCSV } from "../services/csvDownload";
@@ -119,7 +19,7 @@ export default function Dashboard() {
       flexDirection: "column",
       alignItems: "center",
       minHeight: "100vh",
-      backgroundColor: "#f9fafb"
+      backgroundColor: "var(--background-color)"
     }}>
       <Navbar />
       <div style={{ height: "60px" }}></div>
