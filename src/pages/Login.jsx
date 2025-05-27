@@ -41,15 +41,20 @@
 
 
 
+
+
 import { supabase } from "../services/supabaseClient";
 import Navbar from "../components/Navbar";
 
 export default function Login() {
   const handleLogin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider: "google",
+      options: {
+        redirectTo: "https://hgoat.spacecaret.com/dashboard" // 👈 Set this to where you want users to go after login
+      },
     });
-    if (error) console.error('Login error:', error.message);
+    if (error) console.error("Login error:", error.message);
   };
 
   return (
@@ -58,18 +63,64 @@ export default function Login() {
       <div style={{ height: "60px" }}></div>
       <h1 style={{ fontSize: "2rem", fontWeight: "bold" }}>Login</h1>
       <p>🚧 This feature is kinda working!!</p>
-      <button onClick={handleLogin} style={{
-        padding: "12px 24px",
-        backgroundColor: "#4285F4",
-        color: "white",
-        border: "none",
-        borderRadius: "8px",
-        fontSize: "1rem",
-        cursor: "pointer",
-        marginTop: "20px"
-      }}>
+      <button
+        onClick={handleLogin}
+        style={{
+          padding: "12px 24px",
+          backgroundColor: "#4285F4",
+          color: "white",
+          border: "none",
+          borderRadius: "8px",
+          fontSize: "1rem",
+          cursor: "pointer",
+          marginTop: "20px"
+        }}
+      >
         Sign in with Google
       </button>
     </div>
   );
 }
+
+
+
+
+
+
+
+
+// import { supabase } from "../services/supabaseClient";
+// import Navbar from "../components/Navbar";
+
+// export default function Login() {
+//   const handleLogin = async () => {
+//   const { error } = await supabase.auth.signInWithOAuth({
+//     provider: 'google',
+//     options: {
+//       redirectTo: 'https://hgoat.spacecaret.com/auth/callback', // ✅ ADD THIS LINE
+//     },
+//   });
+//   if (error) console.error('Login error:', error.message);
+// };
+
+//   return (
+//     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", minHeight: "100vh" }}>
+//       <Navbar />
+//       <div style={{ height: "60px" }}></div>
+//       <h1 style={{ fontSize: "2rem", fontWeight: "bold" }}>Login</h1>
+//       <p>🚧 This feature is kinda working!!</p>
+//       <button onClick={handleLogin} style={{
+//         padding: "12px 24px",
+//         backgroundColor: "#4285F4",
+//         color: "white",
+//         border: "none",
+//         borderRadius: "8px",
+//         fontSize: "1rem",
+//         cursor: "pointer",
+//         marginTop: "20px"
+//       }}>
+//         Sign in with Google
+//       </button>
+//     </div>
+//   );
+// }
