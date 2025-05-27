@@ -1,14 +1,4 @@
 
-
-
-
-
-
-
-
-
-
-
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -80,7 +70,7 @@ export default function GoatForm({ formData, handleChange }) {
       <div style={{ height: "60px" }}></div>
 
       <h1 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "20px" }}>
-        {t("goatInfo", { id: goatId })}
+        {goatId === "A" ? t("goatKai") : t("goatMayu")}
       </h1>
 
       {/* 🐐 Form Inside a Card */}

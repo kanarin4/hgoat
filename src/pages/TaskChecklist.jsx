@@ -44,7 +44,7 @@ export default function TaskChecklist({ formData = {}, handleChange }) {
         {[
           { id: "waterChanged", label: t("changedWater") },
           { id: "shelterCleaned", label: t("cleanedShelter") },
-          { id: "turnedOnElectricFenceOn", label: t("electricFence") },
+          { id: "electricFenceOn", label: t("electricFence") },
           { id: "setElectricFenceVoltage", label: t("setElectricFenceVoltage") } // ✅ New Checkbox
         ].map(task => (
           <label key={task.id} style={{ display: "flex", alignItems: "center", marginBottom: "8px" }}>

@@ -1,8 +1,5 @@
 
 
-
-
-
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
@@ -134,7 +131,10 @@ export default function Review({ formData = {}, handleChange }) {
       {/* 🐐 Goat Info */}
       {["goatA", "goatB"].map((goat, index) => (
         <Card key={goat}>
-          <h2 style={{ fontWeight: "bold" }}>{t("goatInfo", { id: index === 0 ? "A" : "B" })}</h2>
+          {/* <h2 style={{ fontWeight: "bold" }}>{t("goatInfo", { id: index === 0 ? "A" : "B" })}</h2> */}
+          <h2 style={{ fontWeight: "bold" }}>
+            {index === 0 ? t("goatKai") : t("goatMayu")}
+          </h2>
           <p>{t("bodyTemp")}: {goats[goat].temperature || "N/A"} °C</p>
           <p>{t("stoolCondition")}: {t(goats[goat].stool || "N/A")}</p>
           <p>{t("appetite")}: {t(goats[goat].appetite || "N/A")}</p>
