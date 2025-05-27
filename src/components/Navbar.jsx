@@ -77,11 +77,13 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useSession } from "../hooks/useSession"; // ✅ make sure this is the correct path
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const { t, i18n } = useTranslation();
   const sessionResult = useSession(); // ✅ rename to avoid destructuring crash
   const session = sessionResult?.session;
+  const navigate = useNavigate(); // ✅ Add this line
 
   const toggleLanguage = () => {
     i18n.changeLanguage(i18n.language === "en" ? "ja" : "en");
@@ -102,9 +104,21 @@ export default function Navbar() {
       right: 0,
       zIndex: 1000
     }}>
-      <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+      {/* <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
         <h2 style={{ margin: 0, cursor: "pointer" }}>🐐 HGoat Care</h2>
-      </Link>
+      </Link> */}
+
+      <h2
+        onClick={() => navigate("/")} // ✅ Programmatic nav works everywhere
+        style={{
+          margin: 0,
+          cursor: "pointer",
+          userSelect: "none"
+        }}
+      >
+        🐐 HGoat Care
+      </h2>
+
 
       <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
         <button onClick={toggleLanguage} style={{
