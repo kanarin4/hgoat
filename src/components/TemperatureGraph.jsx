@@ -108,8 +108,8 @@ export default function TemperatureGraph() {
               <XAxis dataKey="date" />
               <YAxis domain={["dataMin - 1", "dataMax + 1"]} />
               <Tooltip />
-              <Line type="monotone" dataKey="goatA" name={t("goatKai")} stroke="#FF6384" strokeWidth={2} />
-              <Line type="monotone" dataKey="goatB" name={t("goatMayu")} stroke="#36A2EB" strokeWidth={2} />
+              <Line type="monotone" dataKey="goatA" name={t("goatKai")} stroke="#36A2EB" strokeWidth={2} />
+              <Line type="monotone" dataKey="goatB" name={t("goatMayu")} stroke="#FF6384" strokeWidth={2} />
             </LineChart>
           </ResponsiveContainer>
         </div>
