@@ -22,45 +22,29 @@ export default function Review({ formData = {}, handleChange }) {
   const tasks = formData.tasks || {};
   const goats = formData.goats || { goatA: {}, goatB: {} };
 
-  const isTempOutOfRange = (temperature) => {
-    const temp = parseFloat(temperature);
-    return temp < 38.5 || temp > 40.5;
-  };
+  // const isTempOutOfRange = (temperature) => {
+  //   const temp = parseFloat(temperature);
+  //   return temp < 38.5 || temp > 40.5;
+  // };
 
   // ✅ Check if form is complete for submission
   const isFormComplete =
     caretakerName &&
     outdoorTemp !== "N/A" &&
     weatherCondition !== t("noData") &&
-    goats.goatA.temperature &&
+    // goats.goatA.temperature &&
     goats.goatA.stool &&
     goats.goatA.appetite &&
-    goats.goatB.temperature &&
+    // goats.goatB.temperature &&
     goats.goatB.stool &&
     goats.goatB.appetite &&
     tasks.waterChanged &&
     tasks.shelterCleaned &&
     tasks.electricFenceOn &&
-    tasks.setElectricFenceVoltage &&
-    (!isTempOutOfRange(goats.goatA.temperature) || goats.goatA.confirmationChecked) &&
-    (!isTempOutOfRange(goats.goatB.temperature) || goats.goatB.confirmationChecked);
-
-  // ✅ Submit form data to Supabase
-//   const handleSubmit = async () => {
-//     console.log("Submitting Form Data:", formData);
-
-//     const { data, error } = await supabase.from("goat_reports").insert([
-//       {
-//         caretaker_name: caretakerName,
-//         outdoor_temperature: outdoorTemp,
-//         weather_condition: weatherCondition,
-//         general_notes: generalNotes,
-//         tasks: tasks,
-//         goatA: goats.goatA,
-//         goatB: goats.goatB,
-//         submitted_at: new Date().toISOString()
-//       }
-//     ]);
+    tasks.setElectricFenceVoltage;
+    // &&
+    // (!isTempOutOfRange(goats.goatA.temperature) || goats.goatA.confirmationChecked) &&
+    // (!isTempOutOfRange(goats.goatB.temperature) || goats.goatB.confirmationChecked);
 
     const handleSubmit = async () => {
         console.log("Submitting Form Data:", formData);
@@ -77,17 +61,17 @@ export default function Review({ formData = {}, handleChange }) {
             weather_code: formData.weather_code,
             general_notes: formData.general_notes,
     
-            goat_a_temperature: formData.goats.goatA.temperature,
+            // goat_a_temperature: formData.goats.goatA.temperature,
             goat_a_stool_condition: formData.goats.goatA.stool,
             goat_a_appetite: formData.goats.goatA.appetite,
             goat_a_notes: formData.goats.goatA.notes,
-            goat_a_confirmation_checked: formData.goats.goatA.confirmationChecked,
+            // goat_a_confirmation_checked: formData.goats.goatA.confirmationChecked,
     
-            goat_b_temperature: formData.goats.goatB.temperature,
+            // goat_b_temperature: formData.goats.goatB.temperature,
             goat_b_stool_condition: formData.goats.goatB.stool,
             goat_b_appetite: formData.goats.goatB.appetite,
             goat_b_notes: formData.goats.goatB.notes,
-            goat_b_confirmation_checked: formData.goats.goatB.confirmationChecked,
+            // goat_b_confirmation_checked: formData.goats.goatB.confirmationChecked,
     
             water_changed: formData.tasks.waterChanged,
             shelter_cleaned: formData.tasks.shelterCleaned,
@@ -135,14 +119,14 @@ export default function Review({ formData = {}, handleChange }) {
           <h2 style={{ fontWeight: "bold" }}>
             {index === 0 ? t("goatKai") : t("goatMayu")}
           </h2>
-          <p>{t("bodyTemp")}: {goats[goat].temperature || "N/A"} °C</p>
+          {/* <p>{t("bodyTemp")}: {goats[goat].temperature || "N/A"} °C</p> */}
           <p>{t("stoolCondition")}: {t(goats[goat].stool || "N/A")}</p>
           <p>{t("appetite")}: {t(goats[goat].appetite || "N/A")}</p>
-          <p style={{ color: isTempOutOfRange(goats[goat].temperature) ? "red" : "green", fontWeight: "bold" }}>
+          {/* <p style={{ color: isTempOutOfRange(goats[goat].temperature) ? "red" : "green", fontWeight: "bold" }}>
             {isTempOutOfRange(goats[goat].temperature)
               ? (goats[goat].confirmationChecked ? t("verifiedByCaretaker") : t("notVerifiedPleaseConfirm"))
               : t("withinNormalRange")}
-          </p>
+          </p> */}
           <button onClick={() => navigate(`/goat-form?goat=${index === 0 ? "A" : "B"}`)} className="edit-button">✏️ {t("edit")}</button>
         </Card>
       ))}
@@ -165,7 +149,7 @@ export default function Review({ formData = {}, handleChange }) {
       </Card>
 
       {/* ⚠️ Warning Messages */}
-      {(!tasks.waterChanged || !tasks.shelterCleaned || !tasks.electricFenceOn || !tasks.setElectricFenceVoltage) && (
+      {/* {(!tasks.waterChanged || !tasks.shelterCleaned || !tasks.electricFenceOn || !tasks.setElectricFenceVoltage) && (
         <p style={{ color: "red", fontWeight: "bold", marginTop: "10px" }}>{t("pleaseCompleteChecklist")}</p>
       )}
       {isTempOutOfRange(goats.goatA.temperature) && !goats.goatA.confirmationChecked && (
@@ -173,7 +157,7 @@ export default function Review({ formData = {}, handleChange }) {
       )}
       {isTempOutOfRange(goats.goatB.temperature) && !goats.goatB.confirmationChecked && (
         <p style={{ color: "red", fontWeight: "bold", marginTop: "10px" }}>{t("confirmGoatBTemp")}</p>
-      )}
+      )} */}
 
       {/* 🔙 Back & 🚀 Submit Buttons */}
        <div style={{ display: "flex", justifyContent: "center", gap: "15px", marginTop: "20px", width: "100%" }}>

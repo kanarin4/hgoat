@@ -28,33 +28,33 @@ export default function GoatForm({ formData, handleChange }) {
     confirmationChecked: false,
   };
 
-  const [confirmationChecked, setConfirmationChecked] = useState(goatData.confirmationChecked || false);
+  // const [confirmationChecked, setConfirmationChecked] = useState(goatData.confirmationChecked || false);
   const [showGuide, setShowGuide] = useState(false); // ✅ State for toggling guide visibility
 
-  const isTempOutOfRange = (temperature) => {
-    const temp = parseFloat(temperature);
-    return temp < 38.5 || temp > 40.5;
-  };
+  // const isTempOutOfRange = (temperature) => {
+  //   const temp = parseFloat(temperature);
+  //   return temp < 38.5 || temp > 40.5;
+  // };
 
-  const handleTempChange = (e) => {
-    const value = e.target.value;
-    handleChange("goats", "temperature", value, formKey);
-    setConfirmationChecked(false);
-    handleChange("goats", "confirmationChecked", false, formKey);
-  };
+  // const handleTempChange = (e) => {
+  //   const value = e.target.value;
+  //   handleChange("goats", "temperature", value, formKey);
+  //   setConfirmationChecked(false);
+  //   handleChange("goats", "confirmationChecked", false, formKey);
+  // };
 
-  const handleCheckboxChange = (e) => {
-    const checked = e.target.checked;
-    setConfirmationChecked(checked);
-    handleChange("goats", "confirmationChecked", checked, formKey);
-  };
+  // const handleCheckboxChange = (e) => {
+  //   const checked = e.target.checked;
+  //   setConfirmationChecked(checked);
+  //   handleChange("goats", "confirmationChecked", checked, formKey);
+  // };
 
-  useEffect(() => {
-    if (!isTempOutOfRange(goatData.temperature) && confirmationChecked) {
-      setConfirmationChecked(false);
-      handleChange("goats", "confirmationChecked", false, formKey);
-    }
-  }, [goatData.temperature, confirmationChecked, handleChange, formKey]);
+  // useEffect(() => {
+  //   if (!isTempOutOfRange(goatData.temperature) && confirmationChecked) {
+  //     setConfirmationChecked(false);
+  //     handleChange("goats", "confirmationChecked", false, formKey);
+  //   }
+  // }, [goatData.temperature, confirmationChecked, handleChange, formKey]);
 
   const goToPrevious = () => {
     navigate(goatId === "B" ? "/goat-form?goat=A" : "/basic-info");
@@ -75,7 +75,7 @@ export default function GoatForm({ formData, handleChange }) {
 
       {/* 🐐 Form Inside a Card */}
       <Card>
-        <label style={{ fontWeight: "bold", display: "block", marginBottom: "5px" }}>{t("bodyTemp")}:</label>
+        {/* <label style={{ fontWeight: "bold", display: "block", marginBottom: "5px" }}>{t("bodyTemp")}:</label>
         <input
           type="number"
           value={goatData.temperature}
@@ -99,7 +99,7 @@ export default function GoatForm({ formData, handleChange }) {
               {t("tempOutsideRangeWarning")}
             </span>
           </label>
-        </div>
+        </div> */}
 
         {/* 💩 Stool */}
         <label style={{ fontWeight: "bold", display: "block", marginTop: "15px", marginBottom: "5px" }}>{t("stoolCondition")}:</label>
@@ -144,10 +144,6 @@ export default function GoatForm({ formData, handleChange }) {
       </Card>
 
     {/* 🔄 Navigation */}
-        {/* <div style={{ display: "flex", gap: "15px", marginTop: "20px" }}>
-            <button onClick={goToPrevious} className="nav-button">⬅️ {t("back")}</button>
-            <button onClick={goToNext} className="nav-button">➡️ {t("next")}</button>
-        </div> */}
 
         <div style={{ display: "flex", gap: "15px", marginTop: "20px" }}>
             <button
@@ -204,14 +200,14 @@ export default function GoatForm({ formData, handleChange }) {
       {showGuide && (
         <Card style={{ marginTop: "20px" }}>
         <h2 style={{ fontWeight: "bold", textAlign: "center", marginBottom: "10px" }}>📖 {t("healthMonitoringGuide")}</h2>
-        <p><strong>{t("bodyTemp")}:</strong></p>
+        {/* <p><strong>{t("bodyTemp")}:</strong></p>
         <p>{t("bodyTempDesc")}</p>
         <ul>
           <li>{t("useLubricatedThermometer")}</li>
           <li>{t("holdGoatSecurely")}</li>
           <li>{t("waitForStableReading")}</li>
           <li>{t("cleanThermometerAfterUse")}</li>
-        </ul>
+        </ul> */}
         <p><strong>{t("stoolCondition")}:</strong></p>
         <p>{t("stoolConditionDesc")}</p>
         <ul>

@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { downloadGoatReportsCSV } from "../services/csvDownload";
 import Card from "../components/Card";
 import Navbar from "../components/Navbar";
-import TemperatureGraph from "../components/TemperatureGraph"; // ✅ Import Graph Component
+// import TemperatureGraph from "../components/TemperatureGraph"; // ✅ Import Graph Component
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -28,13 +28,14 @@ export default function Dashboard() {
         {t("home")}
       </h1>
 
+
       {/* 📈 Temperature Graph Inside a Scrollable Card */}
-      <Card style={{ width: "90%", maxWidth: "700px", padding: "20px" }}>
+      {/* <Card style={{ width: "90%", maxWidth: "700px", padding: "20px" }}>
         <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", textAlign: "center", marginBottom: "10px" }}>
           📈 {t("temperatureTrends")}
         </h2>
 
-        {/* Scrollable Graph Container */}
+        
         <div style={{
           width: "100%",
           overflowX: "auto",   // ✅ Enable horizontal scrolling
@@ -42,11 +43,12 @@ export default function Dashboard() {
           whiteSpace: "nowrap",
           paddingBottom: "10px" // ✅ Avoid cutting off scroll bar
         }}>
-          <div style={{ minWidth: "800px" }}> {/* ✅ Ensures chart width */}
+          <div style={{ minWidth: "800px" }}> 
             <TemperatureGraph />
           </div>
         </div>
-      </Card>
+      </Card> */}
+
 
       {/* 📋 Start Report & 📥 Download CSV */}
       <Card style={{ width: "90%", maxWidth: "400px", padding: "20px", marginTop: "20px" }}>
