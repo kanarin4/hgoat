@@ -1,10 +1,8 @@
-
-
-
-
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { downloadGoatReportsCSV } from "../services/csvDownload";
+import { supabase } from "../services/supabaseClient";
 import Card from "../components/Card";
 import Navbar from "../components/Navbar";
 // import TemperatureGraph from "../components/TemperatureGraph"; // ✅ Import Graph Component
@@ -12,6 +10,31 @@ import Navbar from "../components/Navbar";
 export default function Dashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const [reportStatus, setReportStatus] = useState(null);
+
+  useEffect(() => {
+    const checkReportSubmitted = async () => {
+      const today = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tokyo" }); // yyyy-mm-dd
+      const { data, error } = await supabase
+        .from("goat_reports")
+        .select("caretaker_name")
+        .eq("date", today)
+        .limit(1)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Error checking report status:", error);
+        setReportStatus({ submitted: false });
+      } else if (data) {
+        setReportStatus({ submitted: true, name: data.caretaker_name });
+      } else {
+        setReportStatus({ submitted: false });
+      }
+    };
+
+    checkReportSubmitted();
+  }, []);
 
   return (
     <div style={{
@@ -28,6 +51,24 @@ export default function Dashboard() {
         {t("home")}
       </h1>
 
+      <Card style={{ width: "90%", maxWidth: "700px", padding: "20px", marginBottom: "20px" }}>
+        <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", textAlign: "center" }}>
+          📅 {t("todayIs")}: {new Date().toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo" })}
+        </h2>
+        {reportStatus ? (
+          reportStatus.submitted ? (
+            <p style={{ color: "green", textAlign: "center", fontSize: "1.2rem" }}>
+              ✅ {t("reportSubmittedBy")} {reportStatus.name}
+            </p>
+          ) : (
+            <p style={{ color: "red", textAlign: "center", fontSize: "1.2rem" }}>
+              ❌ {t("reportNotSubmitted")}
+            </p>
+          )
+        ) : (
+          <p style={{ textAlign: "center", fontSize: "1.2rem" }}>{t("loadingStatus")}</p>
+        )}
+      </Card>
 
       {/* 📈 Temperature Graph Inside a Scrollable Card */}
       {/* <Card style={{ width: "90%", maxWidth: "700px", padding: "20px" }}>

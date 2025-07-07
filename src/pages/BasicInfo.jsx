@@ -20,7 +20,7 @@ export default function BasicInfo({ formData = {}, handleChange = () => {} }) {
     outdoor_temperature: formData.outdoor_temperature || "",
     weather_condition: formData.weather_condition || "Clear sky",
     weather_code: formData.weather_code || "",
-    date: formData.date || new Date().toISOString().split("T")[0], // Default to today
+    date: formData.date || new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tokyo" }), // Default to today
     caretaker_name: formData.caretaker_name || "",
   };
 
