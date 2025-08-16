@@ -1,5 +1,6 @@
 {
     "home": "Welcome to the Goat Care App",
+    "hiName": "Hi, {{name}}",
     "startReport": "Start Report",
     "downloadCSV": "Download CSV File",
     "backToHome": "Back to Home",

@@ -1,5 +1,6 @@
 {
     "home": "ヤギケアアプリへようこそ",
+    "hiName": "こんにちは、{{name}}さん",
     "startReport": "レポートを開始",
     "downloadCSV": "CSVファイルをダウンロード",
     "backToHome": "ホームに戻る",
