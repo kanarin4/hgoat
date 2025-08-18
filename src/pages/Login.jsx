@@ -103,7 +103,7 @@ export default function Login() {
       <Navbar />
       <div style={{ height: "60px" }} />
       <h1 style={{ fontSize: "2rem", fontWeight: "bold" }}>Login</h1>
-      <p>🚧 This feature is kinda working!!</p>
+      <p></p>
       <button
         onClick={handleLogin}
         style={{
