@@ -1,7 +1,11 @@
 :root {
-    --primary-color: #4a90e2;
+    /* --primary-color: #4a90e2;
     --secondary-color: #f4f4f4;
     --background-color: #dae9f9;
+    --text-color: #333; */
+    --primary-color: #013168;
+    --secondary-color: #31169c;
+    --background-color: #b7d1ef;
     --text-color: #333;
   }
   
@@ -11,3 +15,11 @@
     background-color: var(--background-color);
     color: var(--text-color);
   }
+
+  /* index.css or App.css */
+@font-face {
+  font-family: "FuturaExtraBold";
+  src: url("/fonts/Futura-CondensedExtraBold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+}

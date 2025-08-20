@@ -80,6 +80,7 @@
     "submissionSuccess": "レポートが正常に送信されました！",
     "submissionError": "レポート送信中にエラーが発生しました。詳細はコンソールを確認してください。",
     "login": "ログイン",
+    "logout": "ログアウト",
     "temperatureTrends": "体温の推移",
     "healthMonitoringGuide": "健康モニタリングガイド",
     "bodyTempDesc": "ヤギの正常な体温範囲は38.5°C～40.5°Cです",
@@ -124,5 +125,46 @@
     "inspectForDamage": "柵に損傷や破損がないか点検する",
     "removeVegetationTouchingFence": "柵に接触している植物を取り除く",
     "checkIndicatorLight": "インジケーターライトが正常に動作しているか確認する",
-    "checkVoltage": "⚡︎ 柵の電圧を確認する ⚡︎"
+    "checkVoltage": "⚡︎ 柵の電圧を確認する ⚡︎",
+
+    "location": "場所",
+    "status": "ステータス",
+    "submittedBy": "提出者",
+    "selectSite": "サイトを選択",
+    "reportingFor": "対象",
+
+    "goatForm": {
+        "progress": "進捗"
+    },
+
+    "account": {
+        "profile": "プロフィール",
+        "email": "メールアドレス",
+        "currentName": "名前",
+        "preferredNickname": "ニックネーム",
+        "mySites": "自分のサイト",
+        "role": "役割",
+        "since": "登録日",
+        "requestAccess": "アクセス申請",
+        "save": "保存",
+        "updateProfileForName": "プロフィールに氏名が見つかりません。更新してください。"
+    },
+
+    "fullName": "氏名",
+    "site": "サイト",
+    "selectASite": "サイトを選択してください…",
+    "noSitesAssigned": "サイトが指定されていません。",
+    "accessCode": "アクセスコード",
+    "providedByCoordinator": "コーディネーターから提供されたコード",
+    "submitRequest": "申請を送信",
+
+    "loadingStatus": "読み込み中…",
+    "errorLoadingSites": "サイトの読み込みに失敗しました。",
+    "pleaseSignInFirst": "最初にサインインしてください。",
+    "requestFailed": "申請の送信に失敗しました。",
+    "requestSent": "申請が送信されました！確認後ご連絡いたします。",
+    "submitting": "送信中…",
+    "back": "戻る",
+    "loginToStart": "Login to start",
+    "viewSampleReport": "View Sample Report"
   }
