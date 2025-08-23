@@ -160,6 +160,7 @@ export default function Review({ formData = {}, handleChange }) {
         minHeight: "100vh",
         backgroundColor: "var(--background-color)",
         width: "100%",
+        paddingBottom: "60px"
       }}
     >
       <Navbar />
