@@ -85,9 +85,20 @@
 
 import { supabase } from "../services/supabaseClient";
 import Navbar from "../components/Navbar";
+import { USE_SUPABASE } from "../services/config";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const handleLogin = async () => {
+    if (!USE_SUPABASE) {
+      console.log("Mocking login...");
+      // In mock mode, we just redirect to dashboard
+      navigate("/");
+      return;
+    }
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
