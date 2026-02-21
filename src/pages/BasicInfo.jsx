@@ -273,10 +273,12 @@ import { getCurrentWeather } from "../services/weatherService";
 import { getWeatherCondition } from "../services/getWeatherCondition";
 import { supabase } from "../services/supabaseClient";
 import { useSession } from "../hooks/useSession";
+import { USE_SUPABASE } from "../services/config";
+import * as mockData from "../services/mockData";
 import Navbar from "../components/Navbar";
 import Card from "../components/Card";
 
-export default function BasicInfo({ formData = {}, handleChange = () => {} }) {
+export default function BasicInfo({ formData = {}, handleChange = () => { } }) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const session = useSession();
@@ -303,6 +305,17 @@ export default function BasicInfo({ formData = {}, handleChange = () => {} }) {
     (async () => {
       // If site_label is missing, fetch it; also grab lat/lon
       const needName = !formData.site_label;
+
+      if (!USE_SUPABASE) {
+        const site = mockData.mockSites.find((s) => s.id === siteId);
+        if (site) {
+          if (needName) handleChange("site_label", null, site.name);
+          // Mock coords for weather
+          setSiteCoords({ lat: 35.39004, lon: 139.42771 });
+        }
+        return;
+      }
+
       const { data, error } = await supabase
         .from("sites")
         .select("name, lat, lon")

@@ -150,6 +150,8 @@
 
 // services/csvDownload.js
 import { supabase } from "./supabaseClient";
+import { USE_SUPABASE } from "./config";
+import { mockTodayReports } from "./mockData";
 
 /**
  * Download reports as CSV, preferring the flattened view.
@@ -159,6 +161,11 @@ import { supabase } from "./supabaseClient";
  * @param {string} [dateTo]   - YYYY-MM-DD
  */
 export async function downloadGoatReportsCSV(siteId, siteLabel, dateFrom, dateTo) {
+  if (!USE_SUPABASE) {
+    console.log("Mocking CSV download...");
+    finalizeDownload(mockTodayReports, siteLabel || "Mock-Site", "mock_reports");
+    return;
+  }
   try {
     // 1) Try the flat view (v_site_report_goat_flat)
     const flat = await fetchFlatView({ siteId, dateFrom, dateTo });

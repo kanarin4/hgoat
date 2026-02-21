@@ -3,21 +3,22 @@ import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useSession } from "../hooks/useSession";
 import { supabase } from "../services/supabaseClient";
+import { USE_SUPABASE } from "../services/config";
 
 export default function Navbar() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const session = useSession();            // ← your hook returns the session object
+  const session = useSession();
   const isLoggedIn = Boolean(session?.user);
 
   const NAV_HEIGHT = 60;
   const buttonBase = {
-    height: 36,                 // fixed height
-    padding: "0 16px",          // width grows, height doesn't
+    height: 36,
+    padding: "0 16px",
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    whiteSpace: "nowrap",       // no wrapping on JA
+    whiteSpace: "nowrap",
     borderRadius: "6px",
     border: "none",
     cursor: "pointer",
@@ -27,41 +28,30 @@ export default function Navbar() {
 
   const handleAccount = () => {
     navigate("/account");
-  }
+  };
 
   const toggleLanguage = () => {
     i18n.changeLanguage(i18n.language === "en" ? "ja" : "en");
   };
 
   const handleLogout = async () => {
+    if (!USE_SUPABASE) {
+      console.log("Mocking logout...");
+      localStorage.setItem("mock_logged_out", "true");
+      window.location.reload();
+      return;
+    }
     await supabase.auth.signOut();
-    navigate("/"); // optional, send home after logout
+    navigate("/");
   };
 
   return (
-    // <nav
-    //   style={{
-    //     width: "100%",
-    //     backgroundColor: "#ffffff",
-    //     padding: "10px 20px",
-    //     display: "flex",
-    //     justifyContent: "space-between",
-    //     alignItems: "center",
-    //     boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-    //     position: "fixed",
-    //     top: 0,
-    //     left: 0,
-    //     right: 0,
-    //     zIndex: 1000,
-    //   }}
-    // >
-
     <nav
       style={{
         width: "100%",
         backgroundColor: "#ffffff",
-        height: NAV_HEIGHT,       // ⬅ fixed navbar height
-        padding: "0 20px",        // horizontal only
+        height: NAV_HEIGHT,
+        padding: "0 20px",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
@@ -73,8 +63,6 @@ export default function Navbar() {
         zIndex: 1000,
       }}
     >
-
-      {/* Clickable brand → Home */}
       <h2
         onClick={() => navigate("/")}
         style={{ margin: 0, cursor: "pointer", userSelect: "none" }}
@@ -83,7 +71,6 @@ export default function Navbar() {
       </h2>
 
       <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-        {/* Language toggle */}
         <button
           onClick={toggleLanguage}
           style={{
@@ -99,9 +86,8 @@ export default function Navbar() {
 
         {isLoggedIn ? (
           <>
-            {/* Account button (optional route) */}
-            {/* <button
-              onClick={() => navigate("/account")}
+            <button
+              onClick={handleAccount}
               title="Account"
               style={{
                 background: "#f3f4f6",
@@ -110,35 +96,13 @@ export default function Navbar() {
                 padding: "6px 10px",
                 cursor: "pointer",
                 fontSize: "1rem",
-              }}
-            >
-              👤
-            </button> */}
-
-          
-          <button
-            onClick={handleAccount}
-            title="Account"
-            style={{
-              background: "#f3f4f6",
-              border: "none",
-              borderRadius: "999px",
-              padding: "6px 10px",
-              cursor: "pointer",
-              fontSize: "1rem",
-              textDecoration: "none", // so it looks like a button not a link
-              display: "inline-block",
-              lineHeight: 1.2,
+                display: "inline-block",
+                lineHeight: 1.2,
               }}
             >
               👤
             </button>
-          
 
-
-          
-
-            {/* Logout */}
             <button
               onClick={handleLogout}
               style={{

@@ -8,7 +8,7 @@
     "reportStatus": "Report Status",
     "reportSubmittedBy": "Report submitted by: ",
     "reportNotSubmitted": "No report submitted yet",
-    "loadingStatus": "Checking report status...",
+    "loadingReportStatus": "Checking report status...",
     "yes": "Yes",
     "no": "No",
     "basicInfo": "Basic Information",
@@ -40,7 +40,7 @@
         "slightHail": "Thunderstorm with slight hail",
         "heavyHail": "Thunderstorm with heavy hail",
         "unknown": "Unknown"
-        },
+    },
     "date": "Date",
     "caretakerName": "Caretaker Name",
     "next": "Next",
@@ -126,17 +126,14 @@
     "removeVegetationTouchingFence": "Remove any vegatation touching the fence",
     "checkIndicatorLight": "Check that indicator lights are working properly",
     "checkVoltage": "⚡︎ Check the voltage of the fence ⚡︎",
-
     "location": "Location",
     "status": "Status",
     "submittedBy": "Submitted By",
     "selectSite": "Select Site",
     "reportingFor": "Reporting For",
-
     "goatForm": {
         "progress": "Progress"
     },
-
     "account": {
         "profile": "Profile",
         "email": "Email",
@@ -149,7 +146,6 @@
         "save": "Save",
         "updateProfileForName": "Full name not found in your profile. Please update it."
     },
-
     "fullName": "Full Name",
     "site": "Site",
     "selectASite": "Select a site…",
@@ -157,15 +153,14 @@
     "accessCode": "Access Code",
     "providedByCoordinator": "Provided by coordinator",
     "submitRequest": "Submit Request",
-
-    "loadingStatus": "Loading…",
+    "loadingSites": "Loading…",
     "errorLoadingSites": "Failed to load sites.",
     "pleaseSignInFirst": "Please sign in first.",
     "requestFailed": "Failed to submit request.",
     "requestSent": "Request sent! We’ll review and get back to you.",
     "submitting": "Submitting…",
-    "back": "Back",
     "loginToStart": "Login to start",
-    "viewSampleReport": "View Sample Report"
-
+    "viewSampleReport": "View Sample Report",
+    "pleaseLogin": "Please login to continue",
+    "loginButton": "Login"
 }

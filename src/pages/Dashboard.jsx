@@ -7,8 +7,10 @@ import { useSession } from "../hooks/useSession";
 import Card from "../components/Card";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { USE_SUPABASE } from "../services/config";
+import * as mockData from "../services/mockData";
 
-export default function Dashboard({ formData = {}, handleChange = () => {} }) {
+export default function Dashboard({ formData = {}, handleChange = () => { } }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -30,6 +32,19 @@ export default function Dashboard({ formData = {}, handleChange = () => {} }) {
     const loadTodayStatus = async () => {
       setLoadingTable(true);
       const today = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tokyo" });
+
+      if (!USE_SUPABASE) {
+        setRows(
+          mockData.mockSites.map((s) => ({
+            siteId: s.id,
+            siteName: s.name,
+            submitted: mockData.mockTodayReports.some((r) => r.site_id === s.id),
+            by: mockData.mockTodayReports.find((r) => r.site_id === s.id)?.caretaker_name || null,
+          }))
+        );
+        setLoadingTable(false);
+        return;
+      }
 
       const { data: sites, error: sitesErr } = await supabase
         .from("sites")
@@ -87,6 +102,16 @@ export default function Dashboard({ formData = {}, handleChange = () => {} }) {
     }
 
     const loadMySites = async () => {
+      if (!USE_SUPABASE) {
+        const unique = mockData.mockMemberships.map((m) => ({ id: m.site_id, name: m.site_name }));
+        handleChange("sites", null, unique);
+        if (!formData.site_id && unique[0]) {
+          handleChange("site_id", null, unique[0].id);
+          handleChange("site_label", null, unique[0].name);
+        }
+        return;
+      }
+
       const { data, error } = await supabase
         .from("site_memberships_full")
         .select("site_id, site_name")
@@ -137,6 +162,20 @@ export default function Dashboard({ formData = {}, handleChange = () => {} }) {
 
     setStartingReport(true);
     try {
+      if (!USE_SUPABASE) {
+        const goatsList = mockData.mockGoats.filter((g) => g.site_id === formData.site_id);
+        handleChange("goatsList", null, goatsList);
+        const nextGoatsAnswers = { ...(formData.goats || {}) };
+        goatsList.forEach((g) => {
+          if (!nextGoatsAnswers[g.id]) {
+            nextGoatsAnswers[g.id] = { stool: "", appetite: "", notes: "" };
+          }
+        });
+        handleChange("goats", null, nextGoatsAnswers);
+        navigate("/basic-info");
+        return;
+      }
+
       // 1) Fetch goats for this site
       const { data, error } = await supabase
         .from("goats")
@@ -194,7 +233,7 @@ export default function Dashboard({ formData = {}, handleChange = () => {} }) {
         </h2>
 
         {loadingTable ? (
-          <p style={{ textAlign: "center", fontSize: "1.1rem" }}>{t("loadingStatus")}</p>
+          <p style={{ textAlign: "center", fontSize: "1.1rem" }}>{t("loadingReportStatus")}</p>
         ) : (
           <div style={{ overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -279,7 +318,7 @@ export default function Dashboard({ formData = {}, handleChange = () => {} }) {
                 }}
               >
                 {startingReport ? "⏳ " : "📋 "}
-                {startingReport ? t("loadingStatus") : t("startReport")}
+                {startingReport ? t("loadingSites") : t("startReport")}
               </button>
 
               <button

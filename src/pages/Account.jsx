@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../services/supabaseClient";
 import { useSession } from "../hooks/useSession";
+import { USE_SUPABASE } from "../services/config";
+import * as mockData from "../services/mockData";
 import Navbar from "../components/Navbar";
 import Card from "../components/Card";
 
@@ -33,6 +35,11 @@ export default function Account() {
         setLoadingSites(false);
         return;
       }
+      if (!USE_SUPABASE) {
+        setMemberships(mockData.mockMemberships);
+        setLoadingSites(false);
+        return;
+      }
       const { data, error } = await supabase
         .from("site_memberships_full") // view created earlier
         .select("site_name, role, created_at")
@@ -55,6 +62,12 @@ export default function Account() {
     try {
       setSaving(true);
       setSaveMsg("");
+      if (!USE_SUPABASE) {
+        console.log("Mocking profile update...");
+        setSaveMsg(t("account.saved"));
+        setSaving(false);
+        return;
+      }
       const { error } = await supabase.auth.updateUser({
         data: { nickname: nickname || null },
       });
@@ -160,7 +173,7 @@ export default function Account() {
           <h2 style={{ marginTop: 0 }}>{t("account.mySites")}</h2>
 
           {loadingSites ? (
-            <p>{t("loadingStatus")}</p>
+            <p>{t("loadingSites")}</p>
           ) : memberships.length === 0 ? (
             <p>{t("account.noSites")}</p>
           ) : (

@@ -8,7 +8,7 @@
     "reportStatus": "レポート状況",
     "reportSubmittedBy": "レポート提出者：",
     "reportNotSubmitted": "まだレポートが提出されていません",
-    "loadingStatus": "レポート状況を確認中...",
+    "loadingReportStatus": "レポート状況を確認中...",
     "yes": "Yes",
     "no": "No",
     "basicInfo": "基本情報",
@@ -40,7 +40,7 @@
         "slightHail": "弱い雹を伴う雷雨",
         "heavyHail": "強い雹を伴う雷雨",
         "unknown": "不明"
-        },
+    },
     "date": "日付",
     "caretakerName": "担当者名",
     "next": "次へ",
@@ -126,17 +126,14 @@
     "removeVegetationTouchingFence": "柵に接触している植物を取り除く",
     "checkIndicatorLight": "インジケーターライトが正常に動作しているか確認する",
     "checkVoltage": "⚡︎ 柵の電圧を確認する ⚡︎",
-
     "location": "場所",
     "status": "ステータス",
     "submittedBy": "提出者",
     "selectSite": "サイトを選択",
     "reportingFor": "対象",
-
     "goatForm": {
         "progress": "進捗"
     },
-
     "account": {
         "profile": "プロフィール",
         "email": "メールアドレス",
@@ -149,7 +146,6 @@
         "save": "保存",
         "updateProfileForName": "プロフィールに氏名が見つかりません。更新してください。"
     },
-
     "fullName": "氏名",
     "site": "サイト",
     "selectASite": "サイトを選択してください…",
@@ -157,14 +153,14 @@
     "accessCode": "アクセスコード",
     "providedByCoordinator": "コーディネーターから提供されたコード",
     "submitRequest": "申請を送信",
-
-    "loadingStatus": "読み込み中…",
+    "loadingSites": "読み込み中…",
     "errorLoadingSites": "サイトの読み込みに失敗しました。",
     "pleaseSignInFirst": "最初にサインインしてください。",
     "requestFailed": "申請の送信に失敗しました。",
     "requestSent": "申請が送信されました！確認後ご連絡いたします。",
     "submitting": "送信中…",
-    "back": "戻る",
-    "loginToStart": "Login to start",
-    "viewSampleReport": "View Sample Report"
-  }
+    "loginToStart": "ログインして開始",
+    "viewSampleReport": "サンプルレポートを表示",
+    "pleaseLogin": "続行するにはログインしてください",
+    "loginButton": "ログイン"
+}

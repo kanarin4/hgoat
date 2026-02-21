@@ -381,7 +381,7 @@ export default function RequestAccess() {
             </label>
 
             {sitesLoading ? (
-              <p style={{ opacity: 0.8 }}>{t("loadingStatus") || "Loading…"}</p>
+              <p style={{ opacity: 0.8 }}>{t("loadingSites") || "Loading…"}</p>
             ) : sitesError ? (
               <p style={{ color: "#e74c3c" }}>{sitesError}</p>
             ) : (

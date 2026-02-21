@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { supabase } from "../services/supabaseClient";
 import Card from "../components/Card";
+import { USE_SUPABASE } from "../services/config";
 
 export default function Review({ formData = {}, handleChange }) {
   const { t } = useTranslation();
@@ -53,6 +54,12 @@ export default function Review({ formData = {}, handleChange }) {
 
   // ---- Submit ---------------------------------------------------------------
   const handleSubmit = async () => {
+    if (!USE_SUPABASE) {
+      console.log("Mocking report submittal...");
+      alert(t("submissionSuccess"));
+      navigate("/");
+      return;
+    }
     try {
       const formattedDate =
         formData.date || new Date().toISOString().split("T")[0];

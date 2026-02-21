@@ -8,12 +8,18 @@ export function useSession() {
 
   useEffect(() => {
     if (!USE_SUPABASE) {
-      setSession({
-        user: {
-          email: "admin@hgoat.local",
-          user_metadata: { full_name: "Admin User" },
-        },
-      });
+      const isLoggedOut = localStorage.getItem("mock_logged_out") === "true";
+      if (isLoggedOut) {
+        setSession(null);
+      } else {
+        setSession({
+          user: {
+            id: "mock-user-123",
+            email: "admin@hgoat.local",
+            user_metadata: { full_name: "Admin User", nickname: "Admin" },
+          },
+        });
+      }
       return;
     }
 
