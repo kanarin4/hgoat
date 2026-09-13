@@ -1,690 +1,328 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { downloadGoatReportsCSV } from "../services/csvDownload";
-import { supabase } from "../services/supabaseClient";
 import { useSession } from "../hooks/useSession";
-import Card from "../components/Card";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { USE_SUPABASE } from "../services/config";
-import * as mockData from "../services/mockData";
+import Card from "../components/Card";
+import MobileGoatCard from "../components/MobileGoatCard";
 
-export default function Dashboard({ formData = {}, handleChange = () => { } }) {
-  const { t } = useTranslation();
+export default function Dashboard({ formData = {}, handleChange = () => {} }) {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const isJa = i18n.language === "ja";
 
   const session = useSession();
   const isLoggedIn = Boolean(session?.user);
-  const name =
-    session?.user?.user_metadata?.nickname ||
-    session?.user?.user_metadata?.full_name ||
-    session?.user?.user_metadata?.name ||
-    session?.user?.email?.split("@")[0] ||
-    "there";
 
-  // ── Today’s per-site status table ───────────────────────────────
-  const [rows, setRows] = useState([]);
-  const [perSiteEnabled, setPerSiteEnabled] = useState(true);
-  const [loadingTable, setLoadingTable] = useState(true);
+  // Quick Demo Mode Handler
+  const handleTriggerDemo = () => {
+    const todayStr = new Date().toISOString().split("T")[0];
+    handleChange("site_id", null, "site-1");
+    handleChange("site_label", null, "H-Village Main Pen");
+    handleChange("date", null, todayStr);
+    handleChange("caretaker_name", null, "Admin User");
+    handleChange("outdoor_temperature", null, "22.4");
+    handleChange("weather_condition", null, isJa ? "晴天" : "Clear Sky");
+    handleChange("weather_code", null, "0");
 
-  useEffect(() => {
-    const loadTodayStatus = async () => {
-      setLoadingTable(true);
-      const today = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tokyo" });
+    // Populate Goats (Strictly real fields: stool, appetite, notes)
+    handleChange("goats", "stool", "good", "goat-1");
+    handleChange("goats", "appetite", "good", "goat-1");
+    handleChange("goats", "notes", isJa ? "食欲旺盛。健康状態良好。" : "Good appetite, healthy.", "goat-1");
 
-      if (!USE_SUPABASE) {
-        setRows(
-          mockData.mockSites.map((s) => ({
-            siteId: s.id,
-            siteName: s.name,
-            submitted: mockData.mockTodayReports.some((r) => r.site_id === s.id),
-            by: mockData.mockTodayReports.find((r) => r.site_id === s.id)?.caretaker_name || null,
-          }))
-        );
-        setLoadingTable(false);
-        return;
-      }
+    handleChange("goats", "stool", "good", "goat-2");
+    handleChange("goats", "appetite", "good", "goat-2");
+    handleChange("goats", "notes", isJa ? "通常通り牧草を食べています。" : "Eating normally.", "goat-2");
 
-      const { data: sites, error: sitesErr } = await supabase
-        .from("sites")
-        .select("id, name")
-        .eq("is_active", true)
-        .order("name", { ascending: true });
+    handleChange("goatsOrder", null, ["goat-1", "goat-2"]);
 
-      if (sitesErr) {
-        console.error("Error loading sites:", sitesErr);
-        setRows([]);
-        setLoadingTable(false);
-        return;
-      }
+    // Populate Tasks
+    handleChange("tasks", "waterChanged", true);
+    handleChange("tasks", "shelterCleaned", true);
+    handleChange("tasks", "electricFenceOn", true);
+    handleChange("tasks", "setElectricFenceVoltage", true);
+    handleChange("general_notes", null, isJa ? "全頭健康状態良好。チェックリスト全項目完了。" : "All goats healthy. All checklist tasks completed.");
 
-      const { data: reports, error: repErr } = await supabase
-        .from("goat_reports")
-        .select("site_id, caretaker_name")
-        .eq("date", today);
-
-      if (repErr) {
-        setPerSiteEnabled(false);
-        setRows(sites.map(s => ({ siteId: s.id, siteName: s.name, submitted: null, by: null })));
-        setLoadingTable(false);
-        return;
-      }
-
-      const firstBySite = new Map();
-      for (const r of reports || []) {
-        if (r.site_id && !firstBySite.has(r.site_id)) {
-          firstBySite.set(r.site_id, r.caretaker_name || "");
-        }
-      }
-
-      setRows(
-        sites.map(s => ({
-          siteId: s.id,
-          siteName: s.name,
-          submitted: firstBySite.has(s.id),
-          by: firstBySite.get(s.id) || null,
-        }))
-      );
-      setLoadingTable(false);
-    };
-
-    loadTodayStatus();
-  }, []);
-
-  // ── user’s accessible sites: store into formData ─────────────────
-  useEffect(() => {
-    if (!session?.user?.id) {
-      handleChange("sites", null, []); // clear
-      handleChange("site_id", null, "");
-      handleChange("site_label", null, "");
-      return;
-    }
-
-    const loadMySites = async () => {
-      if (!USE_SUPABASE) {
-        const unique = mockData.mockMemberships.map((m) => ({ id: m.site_id, name: m.site_name }));
-        handleChange("sites", null, unique);
-        if (!formData.site_id && unique[0]) {
-          handleChange("site_id", null, unique[0].id);
-          handleChange("site_label", null, unique[0].name);
-        }
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from("site_memberships_full")
-        .select("site_id, site_name")
-        .eq("user_id", session.user.id);
-
-      if (!error && data) {
-        const unique = Array.from(
-          new Map(data.map(d => [d.site_id, { id: d.site_id, name: d.site_name }])).values()
-        );
-        handleChange("sites", null, unique);
-        if (!formData.site_id && unique[0]) {
-          handleChange("site_id", null, unique[0].id);
-          handleChange("site_label", null, unique[0].name);
-        }
-        return;
-      }
-
-      // fallback
-      const { data: ms } = await supabase
-        .from("site_memberships")
-        .select("site_id")
-        .eq("user_id", session.user.id);
-
-      if (!ms?.length) {
-        handleChange("sites", null, []);
-        handleChange("site_id", null, "");
-        handleChange("site_label", null, "");
-        return;
-      }
-
-      const ids = ms.map(m => m.site_id);
-      const { data: s2 } = await supabase.from("sites").select("id, name").in("id", ids);
-      handleChange("sites", null, s2 || []);
-      if (!formData.site_id && s2?.[0]) {
-        handleChange("site_id", null, s2[0].id);
-        handleChange("site_label", null, s2[0].name);
-      }
-    };
-
-    loadMySites();
-  }, [session?.user?.id]);
-
-  // ── fetch goats on Start Report ──────────────────────────────────
-  const [startingReport, setStartingReport] = useState(false);
-
-  const handleStartReport = async () => {
-    if (!formData.site_id || startingReport) return;
-
-    setStartingReport(true);
-    try {
-      if (!USE_SUPABASE) {
-        const goatsList = mockData.mockGoats.filter((g) => g.site_id === formData.site_id);
-        handleChange("goatsList", null, goatsList);
-        const nextGoatsAnswers = { ...(formData.goats || {}) };
-        goatsList.forEach((g) => {
-          if (!nextGoatsAnswers[g.id]) {
-            nextGoatsAnswers[g.id] = { stool: "", appetite: "", notes: "" };
-          }
-        });
-        handleChange("goats", null, nextGoatsAnswers);
-        navigate("/basic-info");
-        return;
-      }
-
-      // 1) Fetch goats for this site
-      const { data, error } = await supabase
-        .from("goats")
-        .select("id, name")
-        .eq("site_id", formData.site_id)
-        .order("name", { ascending: true });
-
-      if (error) {
-        console.error("Error fetching goats:", error);
-        // even if goats failed to load, keep going; form can still work with none
-      }
-
-      const goatsList = data || [];
-
-      // 2) Store the roster list
-      handleChange("goatsList", null, goatsList);
-
-      // 3) Ensure answers object has keys for each goat id (but keep existing answers)
-      const existing = formData.goats || {};
-      const nextGoatsAnswers = { ...existing };
-      goatsList.forEach((g) => {
-        if (!nextGoatsAnswers[g.id]) {
-          nextGoatsAnswers[g.id] = { stool: "", appetite: "", notes: "" };
-        }
-      });
-      handleChange("goats", null, nextGoatsAnswers);
-
-      // 4) Go to Basic Info (everything is in formData)
-      navigate("/basic-info");
-    } finally {
-      setStartingReport(false);
-    }
+    // Navigate to review report
+    navigate("/review");
   };
 
-  const handleDownload = () => {
-    if (!formData.site_id) return;
-    downloadGoatReportsCSV(formData.site_id, formData.site_label);
+  const handleStartReport = () => {
+    handleChange("site_id", null, "site-1");
+    handleChange("site_label", null, "H-Village Main Pen");
+    navigate("/basic-info");
   };
 
-  const mySites = formData.sites || [];
+  const siteName = formData.site_label || "H-Village Main Pen";
+  const dateDisplay = new Date().toLocaleDateString(isJa ? "ja-JP" : "en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  const outdoorTemp = formData.outdoor_temperature || "22.4";
+  const weatherCond = formData.weather_condition || (isJa ? "晴天" : "Clear Sky");
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", minHeight: "100vh", backgroundColor: "var(--background-color)" }}>
-      <Navbar />
-      <div style={{ height: "60px" }} />
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        minHeight: "100vh",
+        backgroundColor: "var(--background-color)",
+        width: "100%",
+        paddingBottom: "80px",
+        boxSizing: "border-box",
+      }}
+    >
+      <Navbar onTriggerDemo={handleTriggerDemo} />
 
-      <h1 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "20px" }}>
-        {isLoggedIn ? t("hiName", { name, defaultValue: `Hi, ${name}` }) : t("home")}
-      </h1>
+      {/* Spacing below fixed Navbar */}
+      <div style={{ height: "70px" }} />
 
-      {/* Today status table */}
-      <Card style={{ width: "90%", maxWidth: "800px", padding: "20px", marginBottom: "20px" }}>
-        <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", textAlign: "center", marginBottom: 12 }}>
-          📅 {t("todayIs")}: {new Date().toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo" })}
-        </h2>
-
-        {loadingTable ? (
-          <p style={{ textAlign: "center", fontSize: "1.1rem" }}>{t("loadingReportStatus")}</p>
-        ) : (
-          <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-              <thead>
-                <tr style={{ background: "#f3f4f6" }}>
-                  <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #e5e7eb" }}>{t("location")}</th>
-                  <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #e5e7eb" }}>{t("status")}</th>
-                  <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #e5e7eb" }}>{t("submittedBy")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((r) => (
-                  <tr key={r.siteId}>
-                    <td style={{ padding: "10px", borderBottom: "1px solid #e5e7eb" }}>{r.siteName}</td>
-                    <td style={{ padding: "10px", borderBottom: "1px solid #e5e7eb" }}>
-                      {r.submitted === true && <span style={{ color: "green" }}>✅ {t("reportSubmittedBy")}</span>}
-                      {r.submitted === false && <span style={{ color: "red" }}>❌ {t("reportNotSubmitted")}</span>}
-                      {r.submitted === null && <span style={{ color: "#999" }}>—</span>}
-                    </td>
-                    <td style={{ padding: "10px", borderBottom: "1px solid #e5e7eb" }}>
-                      {r.by ? r.by : <span style={{ color: "#999" }}>—</span>}
-                    </td>
-                  </tr>
-                ))}
-                {rows.length === 0 && (
-                  <tr>
-                    <td colSpan={3} style={{ padding: "10px", textAlign: "center", color: "#666" }}>
-                      {t("noSitesFound")}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+      {/* 1. Site & Weather Overview Card */}
+      <Card
+        style={{
+          background: "linear-gradient(135deg, #064e3b, #047857)",
+          color: "#ffffff",
+          padding: "16px 18px",
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div>
+            <div
+              style={{
+                fontSize: "0.72rem",
+                letterSpacing: "0.5px",
+                color: "#a7f3d0",
+                fontWeight: "bold",
+                textTransform: "uppercase",
+              }}
+            >
+              {t("site", "SITE")}: {siteName}
+            </div>
+            <h1
+              style={{
+                margin: "4px 0 0 0",
+                fontSize: "1.3rem",
+                fontWeight: "bold",
+                letterSpacing: "-0.3px",
+              }}
+            >
+              {isJa ? "ヤギ飼育管理システム" : "HGoat Caretaker System"}
+            </h1>
           </div>
-        )}
-      </Card>
 
-      {/* Actions */}
-      <Card style={{ width: "90%", maxWidth: "460px", padding: "20px", marginTop: "20px" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-          {isLoggedIn ? (
-            <>
-              <label style={{ fontWeight: 600 }}>
-                {t("selectSite")}
-              </label>
-              <select
-                value={formData.site_id || ""}
-                onChange={(e) => {
-                  const id = e.target.value;
-                  const site = mySites.find(s => s.id === id);
-                  handleChange("site_id", null, id);
-                  handleChange("site_label", null, site?.name || "");
-                }}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "8px",
-                  border: "1px solid #ccc",
-                  background: "white"
-                }}
-              >
-                {mySites.length === 0 ? (
-                  <option value="">{t("noSitesAssigned")}</option>
-                ) : (
-                  mySites.map(s => (
-                    <option key={s.id} value={s.id}>{s.name}</option>
-                  ))
-                )}
-              </select>
+          <div
+            style={{
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              padding: "4px 8px",
+              borderRadius: "12px",
+              fontSize: "0.72rem",
+              fontWeight: "bold",
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+            }}
+          >
+            <span className="pulse-dot" />
+            <span>{isJa ? "正常" : "Active"}</span>
+          </div>
+        </div>
 
-              <button
-                onClick={handleStartReport}
-                disabled={!formData.site_id || startingReport}
-                style={{
-                  padding: "12px 24px",
-                  backgroundColor: !formData.site_id || startingReport ? "#9bbbe6" : "#4a90e2",
-                  color: "white",
-                  borderRadius: "8px",
-                  border: "none",
-                  cursor: !formData.site_id || startingReport ? "not-allowed" : "pointer",
-                  fontSize: "1rem",
-                }}
-              >
-                {startingReport ? "⏳ " : "📋 "}
-                {startingReport ? t("loadingSites") : t("startReport")}
-              </button>
-
-              <button
-                onClick={handleDownload}
-                disabled={!formData.site_id}
-                style={{
-                  padding: "12px 24px",
-                  backgroundColor: formData.site_id ? "#2ecc71" : "#a9e5c5",
-                  color: "white",
-                  borderRadius: "8px",
-                  border: "none",
-                  cursor: formData.site_id ? "pointer" : "not-allowed",
-                  fontSize: "1rem",
-                }}
-              >
-                📥 {t("downloadCSV")}
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                onClick={() => navigate("/login")}
-                style={{
-                  padding: "12px 24px",
-                  backgroundColor: "#f39c12",
-                  color: "white",
-                  borderRadius: "8px",
-                  border: "none",
-                  cursor: "pointer",
-                  fontSize: "1rem",
-                }}
-              >
-                🔑 {t("loginToStart")}
-              </button>
-
-              <button
-                onClick={() => navigate("/sampleReport")}
-                style={{
-                  padding: "12px 24px",
-                  backgroundColor: "#95a5a6",
-                  color: "white",
-                  borderRadius: "8px",
-                  border: "none",
-                  cursor: "pointer",
-                  fontSize: "1rem",
-                }}
-              >
-                👀 {t("viewSampleReport")}
-              </button>
-            </>
-          )}
+        <div
+          style={{
+            marginTop: "12px",
+            paddingTop: "10px",
+            borderTop: "1px solid rgba(255, 255, 255, 0.2)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            fontSize: "0.8rem",
+            color: "#d1fae5",
+          }}
+        >
+          <span>📅 {dateDisplay}</span>
+          <span>🌤 {outdoorTemp}°C {weatherCond}</span>
         </div>
       </Card>
 
+      {/* 2. Goat Status Section Header */}
+      <div
+        style={{
+          width: "90%",
+          maxWidth: "540px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          margin: "6px auto 2px auto",
+          padding: "0 4px",
+          boxSizing: "border-box",
+        }}
+      >
+        <h2 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "bold", color: "#1e293b" }}>
+          🐐 {isJa ? "ヤギ健康ステータス" : "Goat Status"}
+        </h2>
+        <span style={{ fontSize: "0.75rem", color: "#166534", fontWeight: "bold" }}>
+          {isJa ? "全2頭 良好" : "2/2 Normal"}
+        </span>
+      </div>
+
+      {/* Kai */}
+      <MobileGoatCard
+        name="Kai"
+        japaneseName={t("goatKai", "カイくん")}
+        stool="good"
+        appetite="good"
+        notes={isJa ? "食欲旺盛。健康状態良好。" : "Good appetite, healthy."}
+      />
+
+      {/* Mayu */}
+      <MobileGoatCard
+        name="Mayu"
+        japaneseName={t("goatMayu", "マユちゃん")}
+        stool="good"
+        appetite="good"
+        notes={isJa ? "通常通り牧草を食べています。" : "Eating normally."}
+      />
+
+      {/* 3. Task Checklist Card */}
+      <Card>
+        <h3 style={{ margin: "0 0 10px 0", fontSize: "0.95rem", fontWeight: "bold", color: "#334155" }}>
+          ✅ {t("taskChecklist", "Task Checklist")}
+        </h3>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "8px",
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "#f0fdf4",
+              border: "1px solid #bbf7d0",
+              padding: "8px 10px",
+              borderRadius: "8px",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+            }}
+          >
+            <span>💧</span>
+            <div>
+              <div style={{ fontSize: "0.78rem", fontWeight: "bold", color: "#14532d" }}>
+                {t("changedWater", "Changed Water")}
+              </div>
+              <div style={{ fontSize: "0.7rem", color: "#166534" }}>{t("yes", "Yes")} ✅</div>
+            </div>
+          </div>
+
+          <div
+            style={{
+              backgroundColor: "#f0fdf4",
+              border: "1px solid #bbf7d0",
+              padding: "8px 10px",
+              borderRadius: "8px",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+            }}
+          >
+            <span>🏠</span>
+            <div>
+              <div style={{ fontSize: "0.78rem", fontWeight: "bold", color: "#14532d" }}>
+                {t("cleanedShelter", "Cleaned Shelter")}
+              </div>
+              <div style={{ fontSize: "0.7rem", color: "#166534" }}>{t("yes", "Yes")} ✅</div>
+            </div>
+          </div>
+
+          <div
+            style={{
+              backgroundColor: "#eff6ff",
+              border: "1px solid #bfdbfe",
+              padding: "8px 10px",
+              borderRadius: "8px",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+            }}
+          >
+            <span>⚡</span>
+            <div>
+              <div style={{ fontSize: "0.78rem", fontWeight: "bold", color: "#1e3a8a" }}>
+                {t("electricFence", "Electric Fence")}
+              </div>
+              <div style={{ fontSize: "0.7rem", color: "#1e40af" }}>{t("yes", "Yes")} ✅</div>
+            </div>
+          </div>
+
+          <div
+            style={{
+              backgroundColor: "#eff6ff",
+              border: "1px solid #bfdbfe",
+              padding: "8px 10px",
+              borderRadius: "8px",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+            }}
+          >
+            <span>⚡</span>
+            <div>
+              <div style={{ fontSize: "0.78rem", fontWeight: "bold", color: "#1e3a8a" }}>
+                {t("setElectricFenceVoltage", "Set Electric Fence Voltage")}
+              </div>
+              <div style={{ fontSize: "0.7rem", color: "#1e40af" }}>{t("yes", "Yes")} ✅</div>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* 4. Action Card (NO duplicate Demo Mode button in the body) */}
+      <Card style={{ textAlign: "center", padding: "16px 20px" }}>
+        <button
+          onClick={handleStartReport}
+          style={{
+            width: "100%",
+            padding: "12px 24px",
+            backgroundColor: "#4a90e2",
+            color: "white",
+            borderRadius: "8px",
+            border: "none",
+            cursor: "pointer",
+            fontSize: "1rem",
+            fontWeight: "bold",
+            marginBottom: "8px",
+            transition: "0.3s",
+          }}
+          onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#357ABD")}
+          onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#4a90e2")}
+        >
+          📋 {t("startReport", "Start Report")}
+        </button>
+
+        <button
+          onClick={() => navigate("/sampleReport")}
+          style={{
+            background: "none",
+            border: "none",
+            color: "#4a90e2",
+            fontSize: "0.85rem",
+            fontWeight: "bold",
+            cursor: "pointer",
+            padding: "4px",
+          }}
+        >
+          👀 {t("viewSampleReport", "View Sample Report")}
+        </button>
+      </Card>
+
+      {/* Fixed Footer */}
       <Footer />
     </div>
   );
 }
-
-
-// import { useEffect, useState } from "react";
-// import { useTranslation } from "react-i18next";
-// import { useNavigate } from "react-router-dom";
-// import { downloadGoatReportsCSV } from "../services/csvDownload";
-// import { supabase } from "../services/supabaseClient";
-// import { useSession } from "../hooks/useSession";
-// import Card from "../components/Card";
-// import Navbar from "../components/Navbar";
-
-// export default function Dashboard({ formData = {}, handleChange = () => {} }) {
-//   const { t } = useTranslation();
-//   const navigate = useNavigate();
-
-//   const session = useSession();
-//   const isLoggedIn = Boolean(session?.user);
-//   const name =
-//     session?.user?.user_metadata?.nickname ||
-//     session?.user?.user_metadata?.full_name ||
-//     session?.user?.user_metadata?.name ||
-//     session?.user?.email?.split("@")[0] ||
-//     "there";
-
-//   // ── Today’s per-site status table ───────────────────────────────
-//   const [rows, setRows] = useState([]);
-//   const [perSiteEnabled, setPerSiteEnabled] = useState(true);
-//   const [loadingTable, setLoadingTable] = useState(true);
-
-//   useEffect(() => {
-//     const loadTodayStatus = async () => {
-//       setLoadingTable(true);
-//       const today = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tokyo" });
-
-//       const { data: sites, error: sitesErr } = await supabase
-//         .from("sites")
-//         .select("id, name")
-//         .eq("is_active", true)
-//         .order("name", { ascending: true });
-
-//       if (sitesErr) {
-//         console.error("Error loading sites:", sitesErr);
-//         setRows([]);
-//         setLoadingTable(false);
-//         return;
-//       }
-
-//       const { data: reports, error: repErr } = await supabase
-//         .from("goat_reports")
-//         .select("site_id, caretaker_name")
-//         .eq("date", today);
-
-//       if (repErr) {
-//         setPerSiteEnabled(false);
-//         setRows(sites.map(s => ({ siteId: s.id, siteName: s.name, submitted: null, by: null })));
-//         setLoadingTable(false);
-//         return;
-//       }
-
-//       const firstBySite = new Map();
-//       for (const r of reports || []) {
-//         if (r.site_id && !firstBySite.has(r.site_id)) {
-//           firstBySite.set(r.site_id, r.caretaker_name || "");
-//         }
-//       }
-
-//       setRows(
-//         sites.map(s => ({
-//           siteId: s.id,
-//           siteName: s.name,
-//           submitted: firstBySite.has(s.id),
-//           by: firstBySite.get(s.id) || null,
-//         }))
-//       );
-//       setLoadingTable(false);
-//     };
-
-//     loadTodayStatus();
-//   }, []);
-
-//   // ── user’s accessible sites: store into formData ─────────────────
-//   useEffect(() => {
-//     if (!session?.user?.id) {
-//       handleChange("sites", null, []); // clear
-//       handleChange("site_id", null, "");
-//       handleChange("site_label", null, "");
-//       return;
-//     }
-
-//     const loadMySites = async () => {
-//       const { data, error } = await supabase
-//         .from("site_memberships_full")
-//         .select("site_id, site_name")
-//         .eq("user_id", session.user.id);
-
-//       if (!error && data) {
-//         const unique = Array.from(
-//           new Map(data.map(d => [d.site_id, { id: d.site_id, name: d.site_name }])).values()
-//         );
-//         handleChange("sites", null, unique);
-//         if (!formData.site_id && unique[0]) {
-//           handleChange("site_id", null, unique[0].id);
-//           handleChange("site_label", null, unique[0].name);
-//         }
-//         return;
-//       }
-
-//       // fallback
-//       const { data: ms } = await supabase
-//         .from("site_memberships")
-//         .select("site_id")
-//         .eq("user_id", session.user.id);
-
-//       if (!ms?.length) {
-//         handleChange("sites", null, []);
-//         handleChange("site_id", null, "");
-//         handleChange("site_label", null, "");
-//         return;
-//       }
-
-//       const ids = ms.map(m => m.site_id);
-//       const { data: s2 } = await supabase.from("sites").select("id, name").in("id", ids);
-//       handleChange("sites", null, s2 || []);
-//       if (!formData.site_id && s2?.[0]) {
-//         handleChange("site_id", null, s2[0].id);
-//         handleChange("site_label", null, s2[0].name);
-//       }
-//     };
-
-//     loadMySites();
-//   }, [session?.user?.id]);
-
-//   // const handleStartReport = () => {
-//   //   if (!formData.site_id) return;
-//   //   navigate("/basic-info");
-//   // };
-
-//   const handleStartReport = () => {
-//     if (!formData.site_id) return;
-
-//     // nothing else to pass via URL — we already keep site_id/site_label in formData
-//     navigate("/basic-info");
-//   };
-
-
-//   const handleDownload = () => {
-//     if (!formData.site_id) return;
-//     downloadGoatReportsCSV(formData.site_id, formData.site_label);
-//   };
-
-//   const mySites = formData.sites || [];
-
-//   return (
-//     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", minHeight: "100vh", backgroundColor: "var(--background-color)" }}>
-//       <Navbar />
-//       <div style={{ height: "60px" }} />
-
-//       <h1 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "20px" }}>
-//         {isLoggedIn ? t("hiName", { name, defaultValue: `Hi, ${name}` }) : t("home")}
-//       </h1>
-
-//       {/* Today status table */}
-//       <Card style={{ width: "90%", maxWidth: "800px", padding: "20px", marginBottom: "20px" }}>
-//         <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", textAlign: "center", marginBottom: 12 }}>
-//           📅 {t("todayIs")}: {new Date().toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo" })}
-//         </h2>
-
-//         {loadingTable ? (
-//           <p style={{ textAlign: "center", fontSize: "1.1rem" }}>{t("loadingStatus")}</p>
-//         ) : (
-//           <div style={{ overflowX: "auto" }}>
-//             <table style={{ width: "100%", borderCollapse: "collapse" }}>
-//               <thead>
-//                 <tr style={{ background: "#f3f4f6" }}>
-//                   <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #e5e7eb" }}>{t("location")}</th>
-//                   <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #e5e7eb" }}>{t("status")}</th>
-//                   <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #e5e7eb" }}>{t("submittedBy")}</th>
-//                 </tr>
-//               </thead>
-//               <tbody>
-//                 {rows.map((r) => (
-//                   <tr key={r.siteId}>
-//                     <td style={{ padding: "10px", borderBottom: "1px solid #e5e7eb" }}>{r.siteName}</td>
-//                     <td style={{ padding: "10px", borderBottom: "1px solid #e5e7eb" }}>
-//                       {r.submitted === true && <span style={{ color: "green" }}>✅ {t("reportSubmittedBy")}</span>}
-//                       {r.submitted === false && <span style={{ color: "red" }}>❌ {t("reportNotSubmitted")}</span>}
-//                       {r.submitted === null && <span style={{ color: "#999" }}>—</span>}
-//                     </td>
-//                     <td style={{ padding: "10px", borderBottom: "1px solid #e5e7eb" }}>
-//                       {r.by ? r.by : <span style={{ color: "#999" }}>—</span>}
-//                     </td>
-//                   </tr>
-//                 ))}
-//                 {rows.length === 0 && (
-//                   <tr>
-//                     <td colSpan={3} style={{ padding: "10px", textAlign: "center", color: "#666" }}>
-//                       {t("noSitesFound")}
-//                     </td>
-//                   </tr>
-//                 )}
-//               </tbody>
-//             </table>
-//           </div>
-//         )}
-//       </Card>
-
-//       {/* Actions */}
-//       <Card style={{ width: "90%", maxWidth: "460px", padding: "20px", marginTop: "20px" }}>
-//         <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-//           {isLoggedIn ? (
-//             <>
-//               <label style={{ fontWeight: 600 }}>
-//                 {t("selectSite")}
-//               </label>
-//               <select
-//                 value={formData.site_id || ""}
-//                 onChange={(e) => {
-//                   const id = e.target.value;
-//                   const site = mySites.find(s => s.id === id);
-//                   handleChange("site_id", null, id);
-//                   handleChange("site_label", null, site?.name || "");
-//                 }}
-//                 style={{
-//                   width: "100%",
-//                   padding: "10px",
-//                   borderRadius: "8px",
-//                   border: "1px solid #ccc",
-//                   background: "white"
-//                 }}
-//               >
-//                 {mySites.length === 0 ? (
-//                   <option value="">{t("noSitesAssigned")}</option>
-//                 ) : (
-//                   mySites.map(s => (
-//                     <option key={s.id} value={s.id}>{s.name}</option>
-//                   ))
-//                 )}
-//               </select>
-
-//               <button
-//                 onClick={handleStartReport}
-//                 disabled={!formData.site_id}
-//                 style={{
-//                   padding: "12px 24px",
-//                   backgroundColor: formData.site_id ? "#4a90e2" : "#9bbbe6",
-//                   color: "white",
-//                   borderRadius: "8px",
-//                   border: "none",
-//                   cursor: formData.site_id ? "pointer" : "not-allowed",
-//                   fontSize: "1rem",
-//                 }}
-//               >
-//                 📋 {t("startReport")}
-//               </button>
-
-//               <button
-//                 onClick={handleDownload}
-//                 disabled={!formData.site_id}
-//                 style={{
-//                   padding: "12px 24px",
-//                   backgroundColor: formData.site_id ? "#2ecc71" : "#a9e5c5",
-//                   color: "white",
-//                   borderRadius: "8px",
-//                   border: "none",
-//                   cursor: formData.site_id ? "pointer" : "not-allowed",
-//                   fontSize: "1rem",
-//                 }}
-//               >
-//                 📥 {t("downloadCSV")}
-//               </button>
-//             </>
-//           ) : (
-//             <>
-//               <button
-//                 onClick={() => navigate("/login")}
-//                 style={{
-//                   padding: "12px 24px",
-//                   backgroundColor: "#f39c12",
-//                   color: "white",
-//                   borderRadius: "8px",
-//                   border: "none",
-//                   cursor: "pointer",
-//                   fontSize: "1rem",
-//                 }}
-//               >
-//                 🔑 {t("loginToStart")}
-//               </button>
-
-//               <button
-//                 onClick={() => navigate("/sampleReport")}
-//                 style={{
-//                   padding: "12px 24px",
-//                   backgroundColor: "#95a5a6",
-//                   color: "white",
-//                   borderRadius: "8px",
-//                   border: "none",
-//                   cursor: "pointer",
-//                   fontSize: "1rem",
-//                 }}
-//               >
-//                 👀 {t("viewSampleReport")}
-//               </button>
-//             </>
-//           )}
-//         </div>
-//       </Card>
-//     </div>
-//   );
-// }
-
-

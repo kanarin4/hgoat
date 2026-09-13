@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-// ======= ONE PLACE TO EDIT YOUR DETAILS =======
 const OWNER_NAME = "A Space Caret Program _^";
 const OWNER_URL = "https://spacecaret.com";
 const SHOW_QUICK_LINKS = false;
@@ -12,7 +11,6 @@ const QUICK_LINKS = [
 ];
 
 const SOCIAL_LINKS = [];
-// ==============================================
 
 export default function Footer() {
   const year = useMemo(() => new Date().getFullYear(), []);
@@ -27,16 +25,19 @@ export default function Footer() {
       style={{
         position: "fixed",
         bottom: 0,
+        left: 0,
+        right: 0,
         width: "100%",
         borderTop: "1px solid rgba(0,0,0,0.08)",
         background: "var(--background-color)",
+        zIndex: 999,
       }}
     >
       <div
         style={{
           maxWidth: 1200,
           margin: "0 auto",
-          padding: "16px 20px",
+          padding: "14px 20px",
           display: "flex",
           flexWrap: "wrap",
           alignItems: "center",
@@ -64,7 +65,7 @@ export default function Footer() {
           >
             {OWNER_NAME}
           </a>{" "}
-            • All rights reserved.
+          • All rights reserved.
         </div>
 
         {/* Right: links */}
