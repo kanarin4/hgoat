@@ -1,13 +1,13 @@
 // src/services/mockData.js
 
 export const mockSites = [
-    { id: "site-1", name: "H-Village Main Pen" },
+    { id: "site-1", name: "H-Village" },
     { id: "site-2", name: "Mountain Pasture" },
     { id: "site-3", name: "Riverside Annex" },
 ];
 
 export const mockMemberships = [
-    { site_id: "site-1", site_name: "H-Village Main Pen", role: "admin", created_at: "2023-01-01T00:00:00Z" },
+    { site_id: "site-1", site_name: "H-Village", role: "admin", created_at: "2023-01-01T00:00:00Z" },
     { site_id: "site-2", site_name: "Mountain Pasture", role: "caretaker", created_at: "2023-05-15T00:00:00Z" },
 ];
 

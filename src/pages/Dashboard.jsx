@@ -19,7 +19,7 @@ export default function Dashboard({ formData = {}, handleChange = () => {} }) {
   const handleTriggerDemo = () => {
     const todayStr = new Date().toISOString().split("T")[0];
     handleChange("site_id", null, "site-1");
-    handleChange("site_label", null, "H-Village Main Pen");
+    handleChange("site_label", null, "H-Village");
     handleChange("date", null, todayStr);
     handleChange("caretaker_name", null, "Admin User");
     handleChange("outdoor_temperature", null, "22.4");
@@ -50,11 +50,11 @@ export default function Dashboard({ formData = {}, handleChange = () => {} }) {
 
   const handleStartReport = () => {
     handleChange("site_id", null, "site-1");
-    handleChange("site_label", null, "H-Village Main Pen");
+    handleChange("site_label", null, "H-Village");
     navigate("/basic-info");
   };
 
-  const siteName = formData.site_label || "H-Village Main Pen";
+  const siteName = formData.site_label || "H-Village";
   const dateDisplay = new Date().toLocaleDateString(isJa ? "ja-JP" : "en-US", {
     year: "numeric",
     month: "long",
